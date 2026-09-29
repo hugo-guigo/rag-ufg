@@ -1,6 +1,6 @@
-# Avaliação da busca (sem LLM)
+# Avaliação da busca (sem LLM), conjunto avaliacao
 
-34 perguntas com resposta no regulamento (32 do regulamento e 2 mistas) e 8 sem resposta.
+34 perguntas com resposta no regulamento e 8 sem resposta.
 Acerto = o trecho devolvido contém a frase anotada com a resposta. Gerado por scripts/avaliar_busca.py.
 
 | Modelo | Estratégia | Busca | Trechos | Caracteres (média) | Artigos por trecho | R@1 | R@3 | R@5 | R@10 | MRR@10 | R@5 (critério artigo) |
@@ -68,26 +68,26 @@ O limiar foi escolhido olhando as próprias perguntas, então a acurácia dele �
 
 | Modelo | Estratégia | Busca | Embedding da pergunta p50 / p95 | Busca no banco p50 / p95 |
 |---|---|---|---|---|
-| multilingual-e5-small-int8 | artigo | vetor | 5 / 8 | 1.8 / 5.1 |
-| multilingual-e5-small-int8 | artigo_secao | vetor | 5 / 8 | 1.9 / 2.9 |
-| multilingual-e5-small-int8 | artigo_sem_contexto | vetor | 5 / 8 | 1.6 / 2.1 |
-| multilingual-e5-small-int8 | janela800 | vetor | 5 / 8 | 1.7 / 1.9 |
-| multilingual-e5-small-int8 | janela400 | vetor | 5 / 8 | 2.2 / 2.4 |
-| multilingual-e5-small-int8 | artigo | texto | 5 / 8 | 1.6 / 2.4 |
-| multilingual-e5-small-int8 | artigo_secao | texto | 5 / 8 | 1.4 / 1.8 |
-| multilingual-e5-small-int8 | artigo_sem_contexto | texto | 5 / 8 | 1.4 / 2.0 |
-| multilingual-e5-small-int8 | janela800 | texto | 5 / 8 | 1.6 / 2.4 |
-| multilingual-e5-small-int8 | janela400 | texto | 5 / 8 | 1.4 / 2.1 |
-| multilingual-e5-small-int8 | artigo | hibrida | 5 / 8 | 2.4 / 3.2 |
-| multilingual-e5-small-int8 | artigo_secao | hibrida | 5 / 8 | 2.1 / 2.4 |
-| multilingual-e5-small-int8 | artigo_sem_contexto | hibrida | 5 / 8 | 2.0 / 2.6 |
-| multilingual-e5-small-int8 | janela800 | hibrida | 5 / 8 | 2.1 / 2.6 |
-| multilingual-e5-small-int8 | janela400 | hibrida | 5 / 8 | 2.5 / 3.2 |
-| multilingual-e5-small-fp32 | artigo | vetor | 7 / 18 | 1.8 / 4.3 |
-| multilingual-e5-small-fp32 | artigo_secao | vetor | 7 / 18 | 1.7 / 1.8 |
-| multilingual-e5-small-fp32 | artigo_sem_contexto | vetor | 7 / 18 | 1.7 / 2.0 |
-| multilingual-e5-small-fp32 | janela800 | vetor | 7 / 18 | 1.6 / 2.0 |
-| multilingual-e5-small-fp32 | janela400 | vetor | 7 / 18 | 2.2 / 2.5 |
+| multilingual-e5-small-int8 | artigo | vetor | 5 / 8 | 1.9 / 4.6 |
+| multilingual-e5-small-int8 | artigo_secao | vetor | 5 / 8 | 1.7 / 2.0 |
+| multilingual-e5-small-int8 | artigo_sem_contexto | vetor | 5 / 8 | 1.6 / 1.9 |
+| multilingual-e5-small-int8 | janela800 | vetor | 5 / 8 | 1.6 / 1.7 |
+| multilingual-e5-small-int8 | janela400 | vetor | 5 / 8 | 2.3 / 3.4 |
+| multilingual-e5-small-int8 | artigo | texto | 5 / 8 | 1.7 / 2.5 |
+| multilingual-e5-small-int8 | artigo_secao | texto | 5 / 8 | 1.4 / 2.0 |
+| multilingual-e5-small-int8 | artigo_sem_contexto | texto | 5 / 8 | 1.4 / 1.8 |
+| multilingual-e5-small-int8 | janela800 | texto | 5 / 8 | 1.5 / 3.0 |
+| multilingual-e5-small-int8 | janela400 | texto | 5 / 8 | 1.4 / 1.8 |
+| multilingual-e5-small-int8 | artigo | hibrida | 5 / 8 | 2.1 / 2.9 |
+| multilingual-e5-small-int8 | artigo_secao | hibrida | 5 / 8 | 2.1 / 2.6 |
+| multilingual-e5-small-int8 | artigo_sem_contexto | hibrida | 5 / 8 | 2.1 / 3.0 |
+| multilingual-e5-small-int8 | janela800 | hibrida | 5 / 8 | 2.1 / 2.7 |
+| multilingual-e5-small-int8 | janela400 | hibrida | 5 / 8 | 2.5 / 2.9 |
+| multilingual-e5-small-fp32 | artigo | vetor | 7 / 9 | 1.9 / 4.6 |
+| multilingual-e5-small-fp32 | artigo_secao | vetor | 7 / 9 | 1.7 / 2.3 |
+| multilingual-e5-small-fp32 | artigo_sem_contexto | vetor | 7 / 9 | 1.6 / 1.9 |
+| multilingual-e5-small-fp32 | janela800 | vetor | 7 / 9 | 1.6 / 2.1 |
+| multilingual-e5-small-fp32 | janela400 | vetor | 7 / 9 | 2.2 / 2.6 |
 
 ## Perguntas sem acerto no top 5
 

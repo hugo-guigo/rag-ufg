@@ -1,13 +1,16 @@
 """Avalia só a busca (sem LLM): recall@k e MRR por estratégia de chunking e por modelo de embedding.
 
-Uso: python scripts/avaliar_busca.py
+Uso: python scripts/avaliar_busca.py [--conjunto avaliacao|teste]
+  avaliacao (padrão): 50 perguntas usadas para escolher a configuração.
+  teste: 10 perguntas do Hugo, rodadas uma vez no fim, só na configuração escolhida.
 Pré-requisito: python scripts/ingerir.py --variante int8  e  --variante fp32
-Saída: resultados/busca.md e resultados/busca.csv
+Saída: resultados/busca[_teste].md e .csv
 
 Critério principal de acerto: o trecho devolvido CONTÉM o trecho-chave anotado (a frase com a resposta).
 Critério secundário: o trecho devolvido pertence a um dos artigos anotados. O secundário favorece
 janelas, que cobrem dois ou três artigos cada, por isso o principal é o outro.
 """
+import argparse
 import csv
 import json
 import statistics
@@ -21,25 +24,33 @@ sys.path.insert(0, str(RAIZ))
 from rag.banco import conectar  # noqa: E402
 from rag.busca import buscar  # noqa: E402
 from rag.embeddings import Embedder  # noqa: E402
-from rag.metricas import contem_trecho, melhor_limiar, mrr, percentil, posicao_do_acerto, recall_em_k  # noqa: E402
+from rag.metricas import (contem_trecho, melhor_limiar, mrr, percentil, posicao_do_acerto,  # noqa: E402
+                          recall_em_k, trechos_de)
 
 KS = [1, 3, 5, 10]
 ESTRATEGIAS = ["artigo", "artigo_secao", "artigo_sem_contexto", "janela800", "janela400"]
 VARIANTES = ["int8", "fp32"]
 # O fp32 só entra na busca vetorial: ele serve para medir o custo da quantização, não para escolher o modo.
 MODOS_POR_VARIANTE = {"int8": ["vetor", "texto", "hibrida"], "fp32": ["vetor"]}
+# Escolhida no conjunto de avaliação (ver resultados/busca.md). O conjunto de teste roda só nela.
+ESCOLHIDA = ("artigo_secao", "vetor")
 SAIDA = RAIZ / "resultados"
 
 
 def main() -> None:
-    perguntas = json.loads((RAIZ / "dados" / "avaliacao.json").read_text(encoding="utf-8"))
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--conjunto", choices=["avaliacao", "teste"], default="avaliacao")
+    args = parser.parse_args()
+    teste = args.conjunto == "teste"
+    sufixo = "_teste" if teste else ""
+    perguntas = json.loads((RAIZ / "dados" / f"{args.conjunto}.json").read_text(encoding="utf-8"))
     com_trecho = [p for p in perguntas if "trecho" in p]  # regulamento + misto
     sem_resposta = [p for p in perguntas if p["tipo"] == "sem_resposta"]
     conexao = conectar()
     SAIDA.mkdir(exist_ok=True)
 
     linhas_csv, resumo = [], []
-    for variante in VARIANTES:
+    for variante in (["int8"] if teste else VARIANTES):
         embedder = Embedder(variante)
         existentes = conexao.execute("SELECT count(*) FROM trechos WHERE modelo = %s", (embedder.nome,)).fetchone()[0]
         if not existentes:
@@ -52,7 +63,10 @@ def main() -> None:
             vetores[p["id"]] = embedder.pergunta(p["pergunta"])
             ms_embedding.append(1000 * (time.perf_counter() - t0))
 
-        for estrategia, modo in [(e, m) for m in MODOS_POR_VARIANTE[variante] for e in ESTRATEGIAS]:
+        configuracoes = [(e, m) for m in MODOS_POR_VARIANTE[variante] for e in ESTRATEGIAS]
+        if teste:
+            configuracoes = [ESCOLHIDA]
+        for estrategia, modo in configuracoes:
             pos_trecho, pos_artigo, ms_busca, top1_com, top1_sem = [], [], [], [], []
             for p in com_trecho + sem_resposta:
                 t0 = time.perf_counter()
@@ -62,7 +76,7 @@ def main() -> None:
                     top1_sem.append(res[0].similaridade if res else 0.0)
                     continue
                 top1_com.append(res[0].similaridade if res else 0.0)
-                pt = posicao_do_acerto(res, lambda r: contem_trecho(r.texto, p["trecho"]))
+                pt = posicao_do_acerto(res, lambda r: any(contem_trecho(r.texto, t) for t in trechos_de(p)))
                 pa = posicao_do_acerto(res, lambda r: bool(set(r.artigos) & set(p["artigos"])))
                 pos_trecho.append(pt)
                 pos_artigo.append(pa)
@@ -88,12 +102,12 @@ def main() -> None:
             print(f"{embedder.nome:32} {estrategia:20} {modo:8} r@1 {resumo[-1]['r@1']:.2f} r@5 {resumo[-1]['r@5']:.2f} "
                   f"mrr {resumo[-1]['mrr@10']:.2f}")
 
-    with open(SAIDA / "busca.csv", "w", encoding="utf-8", newline="") as saida:
+    with open(SAIDA / f"busca{sufixo}.csv", "w", encoding="utf-8", newline="") as saida:
         escritor = csv.DictWriter(saida, fieldnames=list(linhas_csv[0]))
         escritor.writeheader()
         escritor.writerows(linhas_csv)
     pareadas = comparacoes_pareadas(linhas_csv)
-    (SAIDA / "busca.md").write_text(relatorio(resumo, pareadas, len(com_trecho), len(sem_resposta)),
+    (SAIDA / f"busca{sufixo}.md").write_text(relatorio(resumo, pareadas, len(com_trecho), len(sem_resposta), args.conjunto),
                                     encoding="utf-8")
     print(f"\nGravado em {SAIDA}")
 
@@ -129,14 +143,14 @@ def comparacoes_pareadas(linhas_csv: list[dict], k: int = 5) -> list[str]:
     return saida
 
 
-def relatorio(resumo: list[dict], pareadas: list[str], n_com: int, n_sem: int) -> str:
+def relatorio(resumo: list[dict], pareadas: list[str], n_com: int, n_sem: int, conjunto: str) -> str:
     def pct(x: float) -> str:
         return f"{100 * x:.0f}%"
 
     linhas = [
-        "# Avaliação da busca (sem LLM)",
+        f"# Avaliação da busca (sem LLM), conjunto {conjunto}",
         "",
-        f"{n_com} perguntas com resposta no regulamento (32 do regulamento e 2 mistas) e {n_sem} sem resposta.",
+        f"{n_com} perguntas com resposta no regulamento e {n_sem} sem resposta.",
         "Acerto = o trecho devolvido contém a frase anotada com a resposta. Gerado por scripts/avaliar_busca.py.",
         "",
         "| Modelo | Estratégia | Busca | Trechos | Caracteres (média) | Artigos por trecho | R@1 | R@3 | R@5 | R@10 | MRR@10 | R@5 (critério artigo) |",

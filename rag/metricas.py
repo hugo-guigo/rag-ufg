@@ -11,6 +11,12 @@ def contem_trecho(texto: str, trecho: str) -> bool:
     return normalizar(trecho) in normalizar(texto)
 
 
+def trechos_de(pergunta: dict) -> list[str]:
+    """O campo "trecho" aceita um texto ou uma lista de textos (qualquer um deles conta como acerto)."""
+    trecho = pergunta.get("trecho", [])
+    return [trecho] if isinstance(trecho, str) else trecho
+
+
 def posicao_do_acerto(itens: Sequence, acertou: Callable[[object], bool]) -> int | None:
     """Posição (1 = primeiro) do primeiro item relevante, ou None se nenhum for."""
     return next((i for i, item in enumerate(itens, start=1) if acertou(item)), None)
