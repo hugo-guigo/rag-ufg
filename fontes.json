@@ -1,0 +1,14 @@
+[
+  {
+    "id": "rgcg",
+    "titulo": "Regulamento Geral dos Cursos de Graduação (RGCG) da UFG, Resolução CEPEC/UFG nº 1791/2022",
+    "url": "https://sistemas.ufg.br/consultas_publicas/resolucoes/arquivos/Resolucao_CEPEC_2022_1791.pdf",
+    "sha256": "2a015ed384672fa9a5afa6dff87b920cbb5ba640919c6ce9ae00770a783aa24d"
+  },
+  {
+    "id": "calendario-2026",
+    "titulo": "Calendário Acadêmico da UFG 2026, Resolução CEPEC/UFG nº 1966/2025",
+    "url": "https://sistemas.ufg.br/consultas_publicas/resolucoes/arquivos/Resolucao_CEPEC_2025_1966.pdf",
+    "sha256": "4f68822055429e5d03d064ca743e057ca6b68ec1935062148fd10bcb1b08795e"
+  }
+]
