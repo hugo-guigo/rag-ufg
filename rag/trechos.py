@@ -28,7 +28,20 @@ class Trecho:
         return f"{self.contexto}\n{self.texto}" if self.contexto else self.texto
 
 
-def por_artigo(paragrafos: list[Paragrafo], documento: str = "rgcg", max_chars: int = 1500) -> list[Trecho]:
+CONTEXTOS = {"completo": "artigo", "secao": "artigo_secao", "nenhum": "artigo_sem_contexto"}
+
+
+def montar_contexto(secao: str, artigo: int, sufixo: str, modo: str) -> str:
+    """completo: Título > Capítulo > Seção > Art.; secao: só o nível mais fundo; nenhum: vazio."""
+    if modo == "nenhum":
+        return ""
+    if modo == "secao":
+        secao = secao.split(" > ")[-1]
+    return f"{secao} > Art. {artigo}{sufixo}"
+
+
+def por_artigo(paragrafos: list[Paragrafo], documento: str = "rgcg", max_chars: int = 1500,
+               contexto: str = "completo") -> list[Trecho]:
     trechos: list[Trecho] = []
     com_artigo = [p for p in paragrafos if p.artigo is not None]
     for artigo, grupo in groupby(com_artigo, key=lambda p: p.artigo):
@@ -38,9 +51,9 @@ def por_artigo(paragrafos: list[Paragrafo], documento: str = "rgcg", max_chars: 
             trechos.append(Trecho(
                 id=f"{documento}-art{artigo:03d}" + (f"-p{k}" if len(partes) > 1 else ""),
                 documento=documento,
-                estrategia="artigo",
+                estrategia=CONTEXTOS[contexto],
                 texto="\n".join(p.texto for p in parte),
-                contexto=f"{parte[0].secao} > Art. {artigo}{sufixo}",
+                contexto=montar_contexto(parte[0].secao, artigo, sufixo, contexto),
                 artigos=(artigo,),
                 pagina_inicio=parte[0].pagina,
                 pagina_fim=parte[-1].pagina,
@@ -87,7 +100,7 @@ def por_janela(paragrafos: list[Paragrafo], documento: str = "rgcg",
                 fim = corte
         cobertos = [p for a, b, p in spans if a < fim and b > inicio]
         trechos.append(Trecho(
-            id=f"{documento}-jan{len(trechos) + 1:03d}",
+            id=f"{documento}-j{tamanho}-{len(trechos) + 1:03d}",
             documento=documento,
             estrategia=f"janela{tamanho}",
             texto=texto[inicio:fim].strip(),

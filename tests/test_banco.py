@@ -41,6 +41,21 @@ def test_busca_ordena_por_cosseno_e_filtra_estrategia_e_modelo():
     assert resultados[2].similaridade == pytest.approx(0.0, abs=1e-4)
 
 
+def test_busca_por_texto_usa_radicais_e_hibrida_junta_as_duas():
+    from rag.banco import conectar
+
+    conexao = conectar()
+    zero = unitario(1)  # o vetor não importa para o modo texto
+    # "ouvintes" e "ouvinte" têm o mesmo radical; só o Art. 38 fala disso
+    texto = buscar(conexao, zero, k=3, modo="texto", pergunta="alunos ouvintes")
+    assert texto[0].artigos == (38,)
+    assert buscar(conexao, zero, k=3, modo="texto", pergunta="de a o") == []  # só palavras vazias
+    hibrida = buscar(conexao, zero, k=5, modo="hibrida", pergunta="alunos ouvintes")
+    assert len(hibrida) == 5 and any(r.artigos == (38,) for r in hibrida)
+    with pytest.raises(ValueError):
+        buscar(conexao, zero, modo="bm25")
+
+
 def test_usuario_app_so_le():
     from rag.banco import conectar
 

@@ -32,7 +32,10 @@ def main() -> None:
     for f in fontes.values():
         baixar(f)
     paragrafos = paragrafos_rgcg(ler_linhas(fontes["rgcg"].caminho))
-    trechos = por_artigo(paragrafos) + por_janela(paragrafos)
+    trechos = (por_artigo(paragrafos, contexto="completo") + por_artigo(paragrafos, contexto="secao")
+               + por_artigo(paragrafos, contexto="nenhum")
+               + por_janela(paragrafos, tamanho=800, sobreposicao=150)
+               + por_janela(paragrafos, tamanho=400, sobreposicao=80))
 
     t0 = time.perf_counter()
     embedder = Embedder(args.variante)

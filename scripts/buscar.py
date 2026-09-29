@@ -19,7 +19,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("pergunta")
     parser.add_argument("--k", type=int, default=5)
-    parser.add_argument("--estrategia", default="artigo")
+    parser.add_argument("--estrategia", default="artigo_secao")
     parser.add_argument("--variante", choices=["int8", "fp32"], default="int8")
     args = parser.parse_args()
 

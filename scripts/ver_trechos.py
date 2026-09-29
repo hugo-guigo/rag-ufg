@@ -22,7 +22,9 @@ from rag.trechos import Trecho, por_artigo, por_janela  # noqa: E402
 def gerar() -> dict[str, list[Trecho]]:
     rgcg = next(f for f in carregar_fontes() if f.id == "rgcg")
     paragrafos = paragrafos_rgcg(ler_linhas(baixar(rgcg)))
-    return {"artigo": por_artigo(paragrafos), "janela800": por_janela(paragrafos)}
+    return {"artigo": por_artigo(paragrafos),
+            "janela800": por_janela(paragrafos, tamanho=800, sobreposicao=150),
+            "janela400": por_janela(paragrafos, tamanho=400, sobreposicao=80)}
 
 
 def main() -> None:

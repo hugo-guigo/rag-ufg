@@ -23,6 +23,10 @@ CREATE TABLE IF NOT EXISTS trechos (
     embedding      vector(384) NOT NULL,
     PRIMARY KEY (estrategia, modelo, id)
 );
+-- Busca por palavra-chave (full-text do Postgres, com radicais do português) para a busca híbrida.
+ALTER TABLE trechos ADD COLUMN IF NOT EXISTS tsv tsvector
+    GENERATED ALWAYS AS (to_tsvector('portuguese', texto)) STORED;
+CREATE INDEX IF NOT EXISTS trechos_tsv ON trechos USING gin (tsv);
 -- Sem índice aproximado (HNSW/IVFFlat) de propósito: com algumas centenas de linhas a busca exata
 -- lê tudo em menos de 1 ms e nunca erra. Ver a seção de decisões do README.
 

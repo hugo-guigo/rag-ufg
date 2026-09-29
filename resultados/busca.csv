@@ -1,0 +1,681 @@
+modelo,estrategia,modo,id,pergunta,posicao_trecho,posicao_artigo,top1_id,top1_similaridade
+multilingual-e5-small-int8,artigo,vetor,r01,Qual a nota mínima para passar numa disciplina?,,,rgcg-art035,0.8451
+multilingual-e5-small-int8,artigo,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,,rgcg-art070,0.8545
+multilingual-e5-small-int8,artigo,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,,,rgcg-art078,0.8929
+multilingual-e5-small-int8,artigo,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,4,4,rgcg-art072,0.8945
+multilingual-e5-small-int8,artigo,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,2,2,rgcg-art079,0.8909
+multilingual-e5-small-int8,artigo,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-art079,0.8989
+multilingual-e5-small-int8,artigo,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,1,1,rgcg-art083,0.8614
+multilingual-e5-small-int8,artigo,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.8796
+multilingual-e5-small-int8,artigo,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art114,0.8541
+multilingual-e5-small-int8,artigo,vetor,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8841
+multilingual-e5-small-int8,artigo,vetor,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8900
+multilingual-e5-small-int8,artigo,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art041,0.8649
+multilingual-e5-small-int8,artigo,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8831
+multilingual-e5-small-int8,artigo,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8818
+multilingual-e5-small-int8,artigo,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,8,8,rgcg-art019,0.8977
+multilingual-e5-small-int8,artigo,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8965
+multilingual-e5-small-int8,artigo,vetor,r17,Qual a frequência exigida no estágio obrigatório?,2,2,rgcg-art019,0.8803
+multilingual-e5-small-int8,artigo,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,3,rgcg-art028,0.8841
+multilingual-e5-small-int8,artigo,vetor,r19,Como é calculado o índice de prioridade da matrícula?,,2,rgcg-art053,0.8766
+multilingual-e5-small-int8,artigo,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,2,2,rgcg-art052,0.8475
+multilingual-e5-small-int8,artigo,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8663
+multilingual-e5-small-int8,artigo,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8678
+multilingual-e5-small-int8,artigo,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-art104,0.8449
+multilingual-e5-small-int8,artigo,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,4,4,rgcg-art085,0.8549
+multilingual-e5-small-int8,artigo,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,3,3,rgcg-art041,0.8917
+multilingual-e5-small-int8,artigo,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,,,rgcg-art024,0.8672
+multilingual-e5-small-int8,artigo,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,2,2,rgcg-art040,0.8719
+multilingual-e5-small-int8,artigo,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.8969
+multilingual-e5-small-int8,artigo,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.8934
+multilingual-e5-small-int8,artigo,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,,6,rgcg-art036-p1,0.8524
+multilingual-e5-small-int8,artigo,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8720
+multilingual-e5-small-int8,artigo,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8855
+multilingual-e5-small-int8,artigo,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8939
+multilingual-e5-small-int8,artigo,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,8,8,rgcg-art072,0.8898
+multilingual-e5-small-int8,artigo_secao,vetor,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8448
+multilingual-e5-small-int8,artigo_secao,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,2,2,rgcg-art088,0.8716
+multilingual-e5-small-int8,artigo_secao,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,4,4,rgcg-art078,0.8992
+multilingual-e5-small-int8,artigo_secao,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,3,3,rgcg-art073,0.8985
+multilingual-e5-small-int8,artigo_secao,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8907
+multilingual-e5-small-int8,artigo_secao,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-art079,0.9117
+multilingual-e5-small-int8,artigo_secao,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,1,1,rgcg-art083,0.8749
+multilingual-e5-small-int8,artigo_secao,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.9063
+multilingual-e5-small-int8,artigo_secao,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art066-p1,0.8571
+multilingual-e5-small-int8,artigo_secao,vetor,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8862
+multilingual-e5-small-int8,artigo_secao,vetor,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8735
+multilingual-e5-small-int8,artigo_secao,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art091,0.8670
+multilingual-e5-small-int8,artigo_secao,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8736
+multilingual-e5-small-int8,artigo_secao,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8853
+multilingual-e5-small-int8,artigo_secao,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,2,2,rgcg-art019,0.9076
+multilingual-e5-small-int8,artigo_secao,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8942
+multilingual-e5-small-int8,artigo_secao,vetor,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8979
+multilingual-e5-small-int8,artigo_secao,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,3,rgcg-art028,0.8888
+multilingual-e5-small-int8,artigo_secao,vetor,r19,Como é calculado o índice de prioridade da matrícula?,10,3,rgcg-art053,0.8834
+multilingual-e5-small-int8,artigo_secao,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8554
+multilingual-e5-small-int8,artigo_secao,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8755
+multilingual-e5-small-int8,artigo_secao,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8769
+multilingual-e5-small-int8,artigo_secao,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,3,3,rgcg-art101,0.8474
+multilingual-e5-small-int8,artigo_secao,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,2,2,rgcg-art085,0.8602
+multilingual-e5-small-int8,artigo_secao,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,1,1,rgcg-art091,0.8936
+multilingual-e5-small-int8,artigo_secao,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8827
+multilingual-e5-small-int8,artigo_secao,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,4,2,rgcg-art039,0.8635
+multilingual-e5-small-int8,artigo_secao,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.9011
+multilingual-e5-small-int8,artigo_secao,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.9028
+multilingual-e5-small-int8,artigo_secao,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,5,3,rgcg-art036-p1,0.8574
+multilingual-e5-small-int8,artigo_secao,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8775
+multilingual-e5-small-int8,artigo_secao,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8963
+multilingual-e5-small-int8,artigo_secao,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8982
+multilingual-e5-small-int8,artigo_secao,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,9,9,rgcg-art072,0.8883
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8550
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,2,2,rgcg-art088,0.8786
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,2,2,rgcg-art072,0.8876
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,7,7,rgcg-art072,0.8969
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8945
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-art079,0.9107
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-art084,0.8729
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.9124
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art066-p1,0.8558
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8869
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8810
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art091,0.8684
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8799
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8867
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,2,2,rgcg-art019,0.9033
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8956
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8861
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,2,2,rgcg-art028,0.8891
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r19,Como é calculado o índice de prioridade da matrícula?,8,3,rgcg-art053,0.8865
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8497
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8802
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8668
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,9,9,rgcg-art101,0.8354
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8622
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,2,2,rgcg-art037,0.8933
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8831
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,2,1,rgcg-art117-p1,0.8650
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.8965
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.9028
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,3,3,rgcg-art106,0.8568
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8740
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8974
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8987
+multilingual-e5-small-int8,artigo_sem_contexto,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,3,3,rgcg-art072,0.8862
+multilingual-e5-small-int8,janela800,vetor,r01,Qual a nota mínima para passar numa disciplina?,2,2,rgcg-j800-123,0.8579
+multilingual-e5-small-int8,janela800,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,2,rgcg-j800-091,0.8742
+multilingual-e5-small-int8,janela800,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,2,2,rgcg-j800-115,0.8788
+multilingual-e5-small-int8,janela800,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,4,1,rgcg-j800-082,0.8872
+multilingual-e5-small-int8,janela800,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-j800-078,0.8837
+multilingual-e5-small-int8,janela800,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-j800-082,0.8984
+multilingual-e5-small-int8,janela800,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-j800-088,0.8660
+multilingual-e5-small-int8,janela800,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j800-089,0.8743
+multilingual-e5-small-int8,janela800,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,6,6,rgcg-j800-068,0.8573
+multilingual-e5-small-int8,janela800,vetor,r10,Quantas horas de núcleo livre preciso cursar?,8,4,rgcg-j800-093,0.8762
+multilingual-e5-small-int8,janela800,vetor,r11,Qual o prazo máximo para concluir a graduação?,3,3,rgcg-j800-068,0.8741
+multilingual-e5-small-int8,janela800,vetor,r12,Em que situações o aluno é jubilado da UFG?,,1,rgcg-j800-114,0.8704
+multilingual-e5-small-int8,janela800,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,,,rgcg-j800-094,0.8771
+multilingual-e5-small-int8,janela800,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,5,1,rgcg-j800-020,0.8934
+multilingual-e5-small-int8,janela800,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,,,rgcg-j800-022,0.8946
+multilingual-e5-small-int8,janela800,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,2,1,rgcg-j800-027,0.8858
+multilingual-e5-small-int8,janela800,vetor,r17,Qual a frequência exigida no estágio obrigatório?,6,6,rgcg-j800-018,0.8878
+multilingual-e5-small-int8,janela800,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,7,1,rgcg-j800-015,0.8875
+multilingual-e5-small-int8,janela800,vetor,r19,Como é calculado o índice de prioridade da matrícula?,1,1,rgcg-j800-058,0.8846
+multilingual-e5-small-int8,janela800,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,3,1,rgcg-j800-068,0.8516
+multilingual-e5-small-int8,janela800,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-j800-068,0.8869
+multilingual-e5-small-int8,janela800,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-j800-101,0.8602
+multilingual-e5-small-int8,janela800,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,6,1,rgcg-j800-105,0.8353
+multilingual-e5-small-int8,janela800,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j800-106,0.8557
+multilingual-e5-small-int8,janela800,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,,1,rgcg-j800-094,0.9011
+multilingual-e5-small-int8,janela800,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j800-095,0.8735
+multilingual-e5-small-int8,janela800,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,3,1,rgcg-j800-116,0.8728
+multilingual-e5-small-int8,janela800,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-j800-118,0.8943
+multilingual-e5-small-int8,janela800,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-j800-018,0.8780
+multilingual-e5-small-int8,janela800,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,,2,rgcg-j800-041,0.8597
+multilingual-e5-small-int8,janela800,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j800-065,0.8680
+multilingual-e5-small-int8,janela800,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-j800-129,0.8794
+multilingual-e5-small-int8,janela800,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j800-069,0.8878
+multilingual-e5-small-int8,janela800,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,2,2,rgcg-j800-115,0.8752
+multilingual-e5-small-int8,janela400,vetor,r01,Qual a nota mínima para passar numa disciplina?,,1,rgcg-j400-169,0.8623
+multilingual-e5-small-int8,janela400,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,1,rgcg-j400-183,0.8756
+multilingual-e5-small-int8,janela400,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,3,3,rgcg-j400-079,0.8828
+multilingual-e5-small-int8,janela400,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,9,3,rgcg-j400-158,0.8859
+multilingual-e5-small-int8,janela400,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,5,3,rgcg-j400-165,0.8900
+multilingual-e5-small-int8,janela400,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-j400-166,0.8961
+multilingual-e5-small-int8,janela400,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,3,1,rgcg-j400-178,0.8729
+multilingual-e5-small-int8,janela400,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j400-179,0.8932
+multilingual-e5-small-int8,janela400,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-j400-182,0.8581
+multilingual-e5-small-int8,janela400,vetor,r10,Quantas horas de núcleo livre preciso cursar?,9,5,rgcg-j400-121,0.8747
+multilingual-e5-small-int8,janela400,vetor,r11,Qual o prazo máximo para concluir a graduação?,10,1,rgcg-j400-257,0.8715
+multilingual-e5-small-int8,janela400,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-j400-241,0.8605
+multilingual-e5-small-int8,janela400,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,,,rgcg-j400-001,0.8716
+multilingual-e5-small-int8,janela400,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,9,2,rgcg-j400-037,0.8874
+multilingual-e5-small-int8,janela400,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,,,rgcg-j400-045,0.8875
+multilingual-e5-small-int8,janela400,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,3,1,rgcg-j400-055,0.8799
+multilingual-e5-small-int8,janela400,vetor,r17,Qual a frequência exigida no estágio obrigatório?,2,2,rgcg-j400-037,0.8845
+multilingual-e5-small-int8,janela400,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,1,1,rgcg-j400-032,0.8934
+multilingual-e5-small-int8,janela400,vetor,r19,Como é calculado o índice de prioridade da matrícula?,1,1,rgcg-j400-118,0.8913
+multilingual-e5-small-int8,janela400,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,3,1,rgcg-j400-137,0.8484
+multilingual-e5-small-int8,janela400,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-j400-138,0.8791
+multilingual-e5-small-int8,janela400,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,2,1,rgcg-j400-205,0.8837
+multilingual-e5-small-int8,janela400,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,2,2,rgcg-j400-204,0.8373
+multilingual-e5-small-int8,janela400,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j400-214,0.8745
+multilingual-e5-small-int8,janela400,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,1,1,rgcg-j400-187,0.8984
+multilingual-e5-small-int8,janela400,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j400-191,0.8837
+multilingual-e5-small-int8,janela400,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,3,1,rgcg-j400-236,0.8698
+multilingual-e5-small-int8,janela400,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-j400-237,0.8965
+multilingual-e5-small-int8,janela400,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-j400-036,0.8959
+multilingual-e5-small-int8,janela400,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,2,2,rgcg-j400-082,0.8766
+multilingual-e5-small-int8,janela400,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j400-130,0.8667
+multilingual-e5-small-int8,janela400,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-j400-261,0.8637
+multilingual-e5-small-int8,janela400,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j400-139,0.8911
+multilingual-e5-small-int8,janela400,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,5,5,rgcg-j400-164,0.8760
+multilingual-e5-small-int8,artigo,texto,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8280
+multilingual-e5-small-int8,artigo,texto,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,6,6,rgcg-art070,0.8545
+multilingual-e5-small-int8,artigo,texto,r03,Quantas vezes posso trancar a matrícula durante o curso?,,,rgcg-art052,0.8749
+multilingual-e5-small-int8,artigo,texto,r04,Posso trancar a matrícula logo no meu primeiro semestre?,,8,rgcg-art073,0.8904
+multilingual-e5-small-int8,artigo,texto,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8900
+multilingual-e5-small-int8,artigo,texto,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,8,8,rgcg-art077,0.8732
+multilingual-e5-small-int8,artigo,texto,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,4,1,rgcg-art084,0.8566
+multilingual-e5-small-int8,artigo,texto,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.8796
+multilingual-e5-small-int8,artigo,texto,r09,Até quando posso contestar as faltas lançadas pelo professor?,10,10,rgcg-art087,0.8349
+multilingual-e5-small-int8,artigo,texto,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8841
+multilingual-e5-small-int8,artigo,texto,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8900
+multilingual-e5-small-int8,artigo,texto,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art051,0.8559
+multilingual-e5-small-int8,artigo,texto,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,4,4,rgcg-art038,0.8586
+multilingual-e5-small-int8,artigo,texto,r14,Quantas horas por dia posso fazer de estágio obrigatório?,10,10,rgcg-art073,0.8190
+multilingual-e5-small-int8,artigo,texto,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,5,5,rgcg-art008-p1,0.8432
+multilingual-e5-small-int8,artigo,texto,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8965
+multilingual-e5-small-int8,artigo,texto,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8768
+multilingual-e5-small-int8,artigo,texto,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,3,rgcg-art008-p1,0.8466
+multilingual-e5-small-int8,artigo,texto,r19,Como é calculado o índice de prioridade da matrícula?,6,2,rgcg-art059,0.8728
+multilingual-e5-small-int8,artigo,texto,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8460
+multilingual-e5-small-int8,artigo,texto,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,3,3,rgcg-art115,0.8394
+multilingual-e5-small-int8,artigo,texto,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8678
+multilingual-e5-small-int8,artigo,texto,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-art104,0.8449
+multilingual-e5-small-int8,artigo,texto,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8485
+multilingual-e5-small-int8,artigo,texto,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,2,2,rgcg-art041,0.8917
+multilingual-e5-small-int8,artigo,texto,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8545
+multilingual-e5-small-int8,artigo,texto,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,,,rgcg-art126,0.8617
+multilingual-e5-small-int8,artigo,texto,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.8969
+multilingual-e5-small-int8,artigo,texto,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.8934
+multilingual-e5-small-int8,artigo,texto,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,3,3,rgcg-art085,0.8473
+multilingual-e5-small-int8,artigo,texto,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,2,2,rgcg-art059,0.8481
+multilingual-e5-small-int8,artigo,texto,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8855
+multilingual-e5-small-int8,artigo,texto,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8939
+multilingual-e5-small-int8,artigo,texto,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,7,7,rgcg-art072,0.8898
+multilingual-e5-small-int8,artigo_secao,texto,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8448
+multilingual-e5-small-int8,artigo_secao,texto,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,6,6,rgcg-art070,0.8506
+multilingual-e5-small-int8,artigo_secao,texto,r03,Quantas vezes posso trancar a matrícula durante o curso?,,,rgcg-art052,0.8739
+multilingual-e5-small-int8,artigo_secao,texto,r04,Posso trancar a matrícula logo no meu primeiro semestre?,,8,rgcg-art073,0.8985
+multilingual-e5-small-int8,artigo_secao,texto,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8907
+multilingual-e5-small-int8,artigo_secao,texto,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,8,8,rgcg-art077,0.8876
+multilingual-e5-small-int8,artigo_secao,texto,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,4,1,rgcg-art084,0.8688
+multilingual-e5-small-int8,artigo_secao,texto,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.9063
+multilingual-e5-small-int8,artigo_secao,texto,r09,Até quando posso contestar as faltas lançadas pelo professor?,10,10,rgcg-art087,0.8451
+multilingual-e5-small-int8,artigo_secao,texto,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8862
+multilingual-e5-small-int8,artigo_secao,texto,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8735
+multilingual-e5-small-int8,artigo_secao,texto,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art051,0.8459
+multilingual-e5-small-int8,artigo_secao,texto,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,4,4,rgcg-art038,0.8473
+multilingual-e5-small-int8,artigo_secao,texto,r14,Quantas horas por dia posso fazer de estágio obrigatório?,10,10,rgcg-art073,0.8276
+multilingual-e5-small-int8,artigo_secao,texto,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,5,5,rgcg-art008-p1,0.8487
+multilingual-e5-small-int8,artigo_secao,texto,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8942
+multilingual-e5-small-int8,artigo_secao,texto,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8979
+multilingual-e5-small-int8,artigo_secao,texto,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,3,rgcg-art008-p1,0.8509
+multilingual-e5-small-int8,artigo_secao,texto,r19,Como é calculado o índice de prioridade da matrícula?,6,2,rgcg-art059,0.8699
+multilingual-e5-small-int8,artigo_secao,texto,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8554
+multilingual-e5-small-int8,artigo_secao,texto,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,3,3,rgcg-art115,0.8437
+multilingual-e5-small-int8,artigo_secao,texto,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8769
+multilingual-e5-small-int8,artigo_secao,texto,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-art104,0.8419
+multilingual-e5-small-int8,artigo_secao,texto,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8540
+multilingual-e5-small-int8,artigo_secao,texto,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,2,2,rgcg-art041,0.8902
+multilingual-e5-small-int8,artigo_secao,texto,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8827
+multilingual-e5-small-int8,artigo_secao,texto,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,,,rgcg-art126,0.8552
+multilingual-e5-small-int8,artigo_secao,texto,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.9011
+multilingual-e5-small-int8,artigo_secao,texto,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.9028
+multilingual-e5-small-int8,artigo_secao,texto,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,3,3,rgcg-art085,0.8486
+multilingual-e5-small-int8,artigo_secao,texto,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,2,2,rgcg-art059,0.8423
+multilingual-e5-small-int8,artigo_secao,texto,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8963
+multilingual-e5-small-int8,artigo_secao,texto,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8982
+multilingual-e5-small-int8,artigo_secao,texto,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,7,7,rgcg-art072,0.8883
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8550
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,6,6,rgcg-art070,0.8469
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r03,Quantas vezes posso trancar a matrícula durante o curso?,,,rgcg-art052,0.8629
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r04,Posso trancar a matrícula logo no meu primeiro semestre?,,8,rgcg-art073,0.8963
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8945
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,8,8,rgcg-art077,0.8686
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,4,1,rgcg-art084,0.8729
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.9124
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r09,Até quando posso contestar as faltas lançadas pelo professor?,10,10,rgcg-art087,0.8505
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8869
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8810
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art051,0.8441
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,4,4,rgcg-art038,0.8402
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r14,Quantas horas por dia posso fazer de estágio obrigatório?,10,10,rgcg-art073,0.8282
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,5,5,rgcg-art008-p1,0.8417
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8956
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8861
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,3,rgcg-art008-p1,0.8462
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r19,Como é calculado o índice de prioridade da matrícula?,6,2,rgcg-art059,0.8638
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8497
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,3,3,rgcg-art115,0.8473
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8668
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-art104,0.8257
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8622
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,2,2,rgcg-art041,0.8830
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8831
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,,,rgcg-art126,0.8604
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.8965
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.9028
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,3,3,rgcg-art085,0.8548
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,2,2,rgcg-art059,0.8297
+multilingual-e5-small-int8,artigo_sem_contexto,texto,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8974
+multilingual-e5-small-int8,artigo_sem_contexto,texto,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8987
+multilingual-e5-small-int8,artigo_sem_contexto,texto,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,7,7,rgcg-art072,0.8862
+multilingual-e5-small-int8,janela800,texto,r01,Qual a nota mínima para passar numa disciplina?,2,1,rgcg-j800-085,0.8369
+multilingual-e5-small-int8,janela800,texto,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,9,rgcg-j800-075,0.8349
+multilingual-e5-small-int8,janela800,texto,r03,Quantas vezes posso trancar a matrícula durante o curso?,6,6,rgcg-j800-057,0.8669
+multilingual-e5-small-int8,janela800,texto,r04,Posso trancar a matrícula logo no meu primeiro semestre?,4,2,rgcg-j800-078,0.8851
+multilingual-e5-small-int8,janela800,texto,r05,O semestre trancado conta no prazo para terminar o curso?,5,5,rgcg-j800-127,0.8669
+multilingual-e5-small-int8,janela800,texto,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,4,4,rgcg-j800-078,0.8772
+multilingual-e5-small-int8,janela800,texto,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-j800-088,0.8660
+multilingual-e5-small-int8,janela800,texto,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j800-088,0.8741
+multilingual-e5-small-int8,janela800,texto,r09,Até quando posso contestar as faltas lançadas pelo professor?,3,3,rgcg-j800-113,0.8374
+multilingual-e5-small-int8,janela800,texto,r10,Quantas horas de núcleo livre preciso cursar?,,6,rgcg-j800-093,0.8762
+multilingual-e5-small-int8,janela800,texto,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-j800-127,0.8677
+multilingual-e5-small-int8,janela800,texto,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-j800-025,0.8553
+multilingual-e5-small-int8,janela800,texto,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,3,3,rgcg-j800-093,0.8692
+multilingual-e5-small-int8,janela800,texto,r14,Quantas horas por dia posso fazer de estágio obrigatório?,7,4,rgcg-j800-078,0.8275
+multilingual-e5-small-int8,janela800,texto,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,2,2,rgcg-j800-049,0.8510
+multilingual-e5-small-int8,janela800,texto,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-j800-028,0.8818
+multilingual-e5-small-int8,janela800,texto,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-j800-089,0.8701
+multilingual-e5-small-int8,janela800,texto,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,2,2,rgcg-j800-006,0.8373
+multilingual-e5-small-int8,janela800,texto,r19,Como é calculado o índice de prioridade da matrícula?,2,1,rgcg-j800-061,0.8830
+multilingual-e5-small-int8,janela800,texto,r20,Em que casos posso pedir quebra de pré-requisito?,9,2,rgcg-j800-073,0.8218
+multilingual-e5-small-int8,janela800,texto,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,3,3,rgcg-j800-114,0.8617
+multilingual-e5-small-int8,janela800,texto,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-j800-101,0.8602
+multilingual-e5-small-int8,janela800,texto,r23,Que nota preciso tirar na banca de extraordinário domínio?,2,1,rgcg-j800-105,0.8353
+multilingual-e5-small-int8,janela800,texto,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j800-106,0.8557
+multilingual-e5-small-int8,janela800,texto,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,5,1,rgcg-j800-093,0.8918
+multilingual-e5-small-int8,janela800,texto,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j800-094,0.8700
+multilingual-e5-small-int8,janela800,texto,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,,,rgcg-j800-045,0.8704
+multilingual-e5-small-int8,janela800,texto,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-j800-117,0.8858
+multilingual-e5-small-int8,janela800,texto,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-j800-018,0.8780
+multilingual-e5-small-int8,janela800,texto,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,8,3,rgcg-j800-041,0.8597
+multilingual-e5-small-int8,janela800,texto,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j800-064,0.8480
+multilingual-e5-small-int8,janela800,texto,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-j800-129,0.8794
+multilingual-e5-small-int8,janela800,texto,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j800-069,0.8878
+multilingual-e5-small-int8,janela800,texto,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,1,1,rgcg-j800-078,0.8712
+multilingual-e5-small-int8,janela400,texto,r01,Qual a nota mínima para passar numa disciplina?,,1,rgcg-j400-172,0.8445
+multilingual-e5-small-int8,janela400,texto,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,6,rgcg-j400-155,0.8450
+multilingual-e5-small-int8,janela400,texto,r03,Quantas vezes posso trancar a matrícula durante o curso?,8,8,rgcg-j400-115,0.8557
+multilingual-e5-small-int8,janela400,texto,r04,Posso trancar a matrícula logo no meu primeiro semestre?,,1,rgcg-j400-165,0.8782
+multilingual-e5-small-int8,janela400,texto,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-j400-157,0.8791
+multilingual-e5-small-int8,janela400,texto,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,8,1,rgcg-j400-165,0.8871
+multilingual-e5-small-int8,janela400,texto,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-j400-178,0.8729
+multilingual-e5-small-int8,janela400,texto,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j400-179,0.8932
+multilingual-e5-small-int8,janela400,texto,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-j400-159,0.8312
+multilingual-e5-small-int8,janela400,texto,r10,Quantas horas de núcleo livre preciso cursar?,,6,rgcg-j400-187,0.8718
+multilingual-e5-small-int8,janela400,texto,r11,Qual o prazo máximo para concluir a graduação?,2,1,rgcg-j400-257,0.8715
+multilingual-e5-small-int8,janela400,texto,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-j400-191,0.8564
+multilingual-e5-small-int8,janela400,texto,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,,3,rgcg-j400-188,0.8667
+multilingual-e5-small-int8,janela400,texto,r14,Quantas horas por dia posso fazer de estágio obrigatório?,6,6,rgcg-j400-159,0.8305
+multilingual-e5-small-int8,janela400,texto,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,,,rgcg-j400-012,0.8542
+multilingual-e5-small-int8,janela400,texto,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-j400-056,0.8746
+multilingual-e5-small-int8,janela400,texto,r17,Qual a frequência exigida no estágio obrigatório?,4,2,rgcg-j400-147,0.8332
+multilingual-e5-small-int8,janela400,texto,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,2,rgcg-j400-012,0.8584
+multilingual-e5-small-int8,janela400,texto,r19,Como é calculado o índice de prioridade da matrícula?,4,1,rgcg-j400-123,0.8884
+multilingual-e5-small-int8,janela400,texto,r20,Em que casos posso pedir quebra de pré-requisito?,,6,rgcg-j400-148,0.8240
+multilingual-e5-small-int8,janela400,texto,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,3,3,rgcg-j400-230,0.8431
+multilingual-e5-small-int8,janela400,texto,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-j400-204,0.8679
+multilingual-e5-small-int8,janela400,texto,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-j400-211,0.8367
+multilingual-e5-small-int8,janela400,texto,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j400-214,0.8745
+multilingual-e5-small-int8,janela400,texto,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,1,1,rgcg-j400-187,0.8984
+multilingual-e5-small-int8,janela400,texto,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j400-191,0.8837
+multilingual-e5-small-int8,janela400,texto,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,,,rgcg-j400-091,0.8671
+multilingual-e5-small-int8,janela400,texto,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-j400-237,0.8965
+multilingual-e5-small-int8,janela400,texto,r29,Quanto tempo dura a hora-aula no curso noturno?,2,1,rgcg-j400-035,0.8817
+multilingual-e5-small-int8,janela400,texto,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,6,3,rgcg-j400-082,0.8766
+multilingual-e5-small-int8,janela400,texto,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j400-130,0.8667
+multilingual-e5-small-int8,janela400,texto,r32,Até quando preciso estar com a documentação regular para colar grau?,2,1,rgcg-j400-260,0.8542
+multilingual-e5-small-int8,janela400,texto,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j400-139,0.8911
+multilingual-e5-small-int8,janela400,texto,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,6,6,rgcg-j400-157,0.8735
+multilingual-e5-small-int8,artigo,hibrida,r01,Qual a nota mínima para passar numa disciplina?,,,rgcg-art063,0.8421
+multilingual-e5-small-int8,artigo,hibrida,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,5,5,rgcg-art070,0.8545
+multilingual-e5-small-int8,artigo,hibrida,r03,Quantas vezes posso trancar a matrícula durante o curso?,9,9,rgcg-art078,0.8929
+multilingual-e5-small-int8,artigo,hibrida,r04,Posso trancar a matrícula logo no meu primeiro semestre?,9,7,rgcg-art073,0.8904
+multilingual-e5-small-int8,artigo,hibrida,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8900
+multilingual-e5-small-int8,artigo,hibrida,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,3,3,rgcg-art073,0.8757
+multilingual-e5-small-int8,artigo,hibrida,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-art084,0.8566
+multilingual-e5-small-int8,artigo,hibrida,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.8796
+multilingual-e5-small-int8,artigo,hibrida,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art114,0.8541
+multilingual-e5-small-int8,artigo,hibrida,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8841
+multilingual-e5-small-int8,artigo,hibrida,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8900
+multilingual-e5-small-int8,artigo,hibrida,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art051,0.8559
+multilingual-e5-small-int8,artigo,hibrida,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8831
+multilingual-e5-small-int8,artigo,hibrida,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8818
+multilingual-e5-small-int8,artigo,hibrida,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,1,1,rgcg-art030,0.8724
+multilingual-e5-small-int8,artigo,hibrida,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8965
+multilingual-e5-small-int8,artigo,hibrida,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8768
+multilingual-e5-small-int8,artigo,hibrida,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,1,1,rgcg-art014,0.8819
+multilingual-e5-small-int8,artigo,hibrida,r19,Como é calculado o índice de prioridade da matrícula?,10,2,rgcg-art053,0.8766
+multilingual-e5-small-int8,artigo,hibrida,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8460
+multilingual-e5-small-int8,artigo,hibrida,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8663
+multilingual-e5-small-int8,artigo,hibrida,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8678
+multilingual-e5-small-int8,artigo,hibrida,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-art104,0.8449
+multilingual-e5-small-int8,artigo,hibrida,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8485
+multilingual-e5-small-int8,artigo,hibrida,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,2,2,rgcg-art041,0.8917
+multilingual-e5-small-int8,artigo,hibrida,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8545
+multilingual-e5-small-int8,artigo,hibrida,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,8,8,rgcg-art039,0.8653
+multilingual-e5-small-int8,artigo,hibrida,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.8969
+multilingual-e5-small-int8,artigo,hibrida,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.8934
+multilingual-e5-small-int8,artigo,hibrida,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,6,4,rgcg-art085,0.8473
+multilingual-e5-small-int8,artigo,hibrida,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8720
+multilingual-e5-small-int8,artigo,hibrida,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8855
+multilingual-e5-small-int8,artigo,hibrida,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8939
+multilingual-e5-small-int8,artigo,hibrida,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,3,3,rgcg-art072,0.8898
+multilingual-e5-small-int8,artigo_secao,hibrida,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8448
+multilingual-e5-small-int8,artigo_secao,hibrida,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,2,2,rgcg-art070,0.8506
+multilingual-e5-small-int8,artigo_secao,hibrida,r03,Quantas vezes posso trancar a matrícula durante o curso?,7,7,rgcg-art078,0.8992
+multilingual-e5-small-int8,artigo_secao,hibrida,r04,Posso trancar a matrícula logo no meu primeiro semestre?,9,6,rgcg-art073,0.8985
+multilingual-e5-small-int8,artigo_secao,hibrida,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8907
+multilingual-e5-small-int8,artigo_secao,hibrida,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,4,4,rgcg-art073,0.8892
+multilingual-e5-small-int8,artigo_secao,hibrida,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-art084,0.8688
+multilingual-e5-small-int8,artigo_secao,hibrida,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.9063
+multilingual-e5-small-int8,artigo_secao,hibrida,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art087,0.8451
+multilingual-e5-small-int8,artigo_secao,hibrida,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8862
+multilingual-e5-small-int8,artigo_secao,hibrida,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8735
+multilingual-e5-small-int8,artigo_secao,hibrida,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art041,0.8586
+multilingual-e5-small-int8,artigo_secao,hibrida,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8736
+multilingual-e5-small-int8,artigo_secao,hibrida,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8853
+multilingual-e5-small-int8,artigo_secao,hibrida,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,1,1,rgcg-art030,0.8928
+multilingual-e5-small-int8,artigo_secao,hibrida,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8942
+multilingual-e5-small-int8,artigo_secao,hibrida,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8979
+multilingual-e5-small-int8,artigo_secao,hibrida,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,1,1,rgcg-art014,0.8836
+multilingual-e5-small-int8,artigo_secao,hibrida,r19,Como é calculado o índice de prioridade da matrícula?,7,3,rgcg-art053,0.8834
+multilingual-e5-small-int8,artigo_secao,hibrida,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8554
+multilingual-e5-small-int8,artigo_secao,hibrida,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8755
+multilingual-e5-small-int8,artigo_secao,hibrida,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8769
+multilingual-e5-small-int8,artigo_secao,hibrida,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-art104,0.8419
+multilingual-e5-small-int8,artigo_secao,hibrida,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8540
+multilingual-e5-small-int8,artigo_secao,hibrida,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,2,2,rgcg-art041,0.8902
+multilingual-e5-small-int8,artigo_secao,hibrida,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8827
+multilingual-e5-small-int8,artigo_secao,hibrida,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,,9,rgcg-art039,0.8635
+multilingual-e5-small-int8,artigo_secao,hibrida,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.9011
+multilingual-e5-small-int8,artigo_secao,hibrida,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.9028
+multilingual-e5-small-int8,artigo_secao,hibrida,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,5,4,rgcg-art035,0.8537
+multilingual-e5-small-int8,artigo_secao,hibrida,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8775
+multilingual-e5-small-int8,artigo_secao,hibrida,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8963
+multilingual-e5-small-int8,artigo_secao,hibrida,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8982
+multilingual-e5-small-int8,artigo_secao,hibrida,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,7,7,rgcg-art072,0.8883
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8550
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,4,4,rgcg-art071,0.8480
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r03,Quantas vezes posso trancar a matrícula durante o curso?,6,6,rgcg-art072,0.8876
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r04,Posso trancar a matrícula logo no meu primeiro semestre?,10,10,rgcg-art073,0.8963
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-art072,0.8945
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,3,3,rgcg-art073,0.8868
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-art084,0.8729
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.9124
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art087,0.8505
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8869
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8810
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art080,0.8530
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8799
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8867
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,1,1,rgcg-art030,0.8885
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8956
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8861
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,1,1,rgcg-art014,0.8857
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r19,Como é calculado o índice de prioridade da matrícula?,6,3,rgcg-art053,0.8865
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8497
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8802
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8668
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-art104,0.8257
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8622
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,1,1,rgcg-art091,0.8913
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8831
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,10,8,rgcg-art126,0.8604
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.8965
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.9028
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,3,3,rgcg-art085,0.8548
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8740
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8974
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8987
+multilingual-e5-small-int8,artigo_sem_contexto,hibrida,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,3,3,rgcg-art072,0.8862
+multilingual-e5-small-int8,janela800,hibrida,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-j800-084,0.8497
+multilingual-e5-small-int8,janela800,hibrida,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,7,1,rgcg-j800-090,0.8654
+multilingual-e5-small-int8,janela800,hibrida,r03,Quantas vezes posso trancar a matrícula durante o curso?,3,3,rgcg-j800-115,0.8788
+multilingual-e5-small-int8,janela800,hibrida,r04,Posso trancar a matrícula logo no meu primeiro semestre?,3,1,rgcg-j800-082,0.8872
+multilingual-e5-small-int8,janela800,hibrida,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-j800-078,0.8837
+multilingual-e5-small-int8,janela800,hibrida,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-j800-082,0.8984
+multilingual-e5-small-int8,janela800,hibrida,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-j800-088,0.8660
+multilingual-e5-small-int8,janela800,hibrida,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j800-088,0.8741
+multilingual-e5-small-int8,janela800,hibrida,r09,Até quando posso contestar as faltas lançadas pelo professor?,2,2,rgcg-j800-090,0.8547
+multilingual-e5-small-int8,janela800,hibrida,r10,Quantas horas de núcleo livre preciso cursar?,9,3,rgcg-j800-093,0.8762
+multilingual-e5-small-int8,janela800,hibrida,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-j800-127,0.8677
+multilingual-e5-small-int8,janela800,hibrida,r12,Em que situações o aluno é jubilado da UFG?,,7,rgcg-j800-039,0.8684
+multilingual-e5-small-int8,janela800,hibrida,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,8,8,rgcg-j800-093,0.8692
+multilingual-e5-small-int8,janela800,hibrida,r14,Quantas horas por dia posso fazer de estágio obrigatório?,3,1,rgcg-j800-020,0.8934
+multilingual-e5-small-int8,janela800,hibrida,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,2,2,rgcg-j800-027,0.8811
+multilingual-e5-small-int8,janela800,hibrida,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,2,1,rgcg-j800-027,0.8858
+multilingual-e5-small-int8,janela800,hibrida,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-j800-089,0.8701
+multilingual-e5-small-int8,janela800,hibrida,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,2,1,rgcg-j800-015,0.8875
+multilingual-e5-small-int8,janela800,hibrida,r19,Como é calculado o índice de prioridade da matrícula?,1,1,rgcg-j800-058,0.8846
+multilingual-e5-small-int8,janela800,hibrida,r20,Em que casos posso pedir quebra de pré-requisito?,3,1,rgcg-j800-067,0.8429
+multilingual-e5-small-int8,janela800,hibrida,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,2,2,rgcg-j800-114,0.8617
+multilingual-e5-small-int8,janela800,hibrida,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-j800-101,0.8602
+multilingual-e5-small-int8,janela800,hibrida,r23,Que nota preciso tirar na banca de extraordinário domínio?,2,1,rgcg-j800-105,0.8353
+multilingual-e5-small-int8,janela800,hibrida,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j800-106,0.8557
+multilingual-e5-small-int8,janela800,hibrida,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,9,1,rgcg-j800-093,0.8918
+multilingual-e5-small-int8,janela800,hibrida,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j800-094,0.8700
+multilingual-e5-small-int8,janela800,hibrida,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,,10,rgcg-j800-045,0.8704
+multilingual-e5-small-int8,janela800,hibrida,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-j800-117,0.8858
+multilingual-e5-small-int8,janela800,hibrida,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-j800-018,0.8780
+multilingual-e5-small-int8,janela800,hibrida,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,8,2,rgcg-j800-041,0.8597
+multilingual-e5-small-int8,janela800,hibrida,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j800-065,0.8680
+multilingual-e5-small-int8,janela800,hibrida,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-j800-129,0.8794
+multilingual-e5-small-int8,janela800,hibrida,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j800-069,0.8878
+multilingual-e5-small-int8,janela800,hibrida,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,1,1,rgcg-j800-078,0.8712
+multilingual-e5-small-int8,janela400,hibrida,r01,Qual a nota mínima para passar numa disciplina?,,1,rgcg-j400-169,0.8623
+multilingual-e5-small-int8,janela400,hibrida,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,1,rgcg-j400-181,0.8745
+multilingual-e5-small-int8,janela400,hibrida,r03,Quantas vezes posso trancar a matrícula durante o curso?,2,2,rgcg-j400-232,0.8730
+multilingual-e5-small-int8,janela400,hibrida,r04,Posso trancar a matrícula logo no meu primeiro semestre?,,1,rgcg-j400-165,0.8782
+multilingual-e5-small-int8,janela400,hibrida,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-j400-157,0.8791
+multilingual-e5-small-int8,janela400,hibrida,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,3,1,rgcg-j400-165,0.8871
+multilingual-e5-small-int8,janela400,hibrida,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-j400-178,0.8729
+multilingual-e5-small-int8,janela400,hibrida,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j400-179,0.8932
+multilingual-e5-small-int8,janela400,hibrida,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-j400-182,0.8581
+multilingual-e5-small-int8,janela400,hibrida,r10,Quantas horas de núcleo livre preciso cursar?,,4,rgcg-j400-187,0.8718
+multilingual-e5-small-int8,janela400,hibrida,r11,Qual o prazo máximo para concluir a graduação?,2,1,rgcg-j400-257,0.8715
+multilingual-e5-small-int8,janela400,hibrida,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-j400-113,0.8590
+multilingual-e5-small-int8,janela400,hibrida,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,,7,rgcg-j400-188,0.8667
+multilingual-e5-small-int8,janela400,hibrida,r14,Quantas horas por dia posso fazer de estágio obrigatório?,3,3,rgcg-j400-036,0.8782
+multilingual-e5-small-int8,janela400,hibrida,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,2,2,rgcg-j400-040,0.8678
+multilingual-e5-small-int8,janela400,hibrida,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,2,1,rgcg-j400-055,0.8799
+multilingual-e5-small-int8,janela400,hibrida,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-j400-181,0.8813
+multilingual-e5-small-int8,janela400,hibrida,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,1,1,rgcg-j400-032,0.8934
+multilingual-e5-small-int8,janela400,hibrida,r19,Como é calculado o índice de prioridade da matrícula?,2,1,rgcg-j400-123,0.8884
+multilingual-e5-small-int8,janela400,hibrida,r20,Em que casos posso pedir quebra de pré-requisito?,5,2,rgcg-j400-112,0.8386
+multilingual-e5-small-int8,janela400,hibrida,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-j400-138,0.8791
+multilingual-e5-small-int8,janela400,hibrida,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-j400-204,0.8679
+multilingual-e5-small-int8,janela400,hibrida,r23,Que nota preciso tirar na banca de extraordinário domínio?,1,1,rgcg-j400-211,0.8367
+multilingual-e5-small-int8,janela400,hibrida,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j400-214,0.8745
+multilingual-e5-small-int8,janela400,hibrida,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,1,1,rgcg-j400-187,0.8984
+multilingual-e5-small-int8,janela400,hibrida,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j400-191,0.8837
+multilingual-e5-small-int8,janela400,hibrida,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,8,6,rgcg-j400-091,0.8671
+multilingual-e5-small-int8,janela400,hibrida,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-j400-237,0.8965
+multilingual-e5-small-int8,janela400,hibrida,r29,Quanto tempo dura a hora-aula no curso noturno?,2,1,rgcg-j400-035,0.8817
+multilingual-e5-small-int8,janela400,hibrida,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,2,2,rgcg-j400-082,0.8766
+multilingual-e5-small-int8,janela400,hibrida,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j400-130,0.8667
+multilingual-e5-small-int8,janela400,hibrida,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-j400-261,0.8637
+multilingual-e5-small-int8,janela400,hibrida,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j400-139,0.8911
+multilingual-e5-small-int8,janela400,hibrida,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,3,3,rgcg-j400-157,0.8735
+multilingual-e5-small-fp32,artigo,vetor,r01,Qual a nota mínima para passar numa disciplina?,,,rgcg-art035,0.8478
+multilingual-e5-small-fp32,artigo,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,,rgcg-art088,0.8549
+multilingual-e5-small-fp32,artigo,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,,,rgcg-art062,0.8833
+multilingual-e5-small-fp32,artigo,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,4,4,rgcg-art072,0.8887
+multilingual-e5-small-fp32,artigo,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,2,2,rgcg-art079,0.8867
+multilingual-e5-small-fp32,artigo,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-art079,0.8908
+multilingual-e5-small-fp32,artigo,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-art084,0.8623
+multilingual-e5-small-fp32,artigo,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art086,0.8734
+multilingual-e5-small-fp32,artigo,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art052,0.8483
+multilingual-e5-small-fp32,artigo,vetor,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8813
+multilingual-e5-small-fp32,artigo,vetor,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8836
+multilingual-e5-small-fp32,artigo,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art037,0.8673
+multilingual-e5-small-fp32,artigo,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8938
+multilingual-e5-small-fp32,artigo,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8818
+multilingual-e5-small-fp32,artigo,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,6,6,rgcg-art019,0.9006
+multilingual-e5-small-fp32,artigo,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8872
+multilingual-e5-small-fp32,artigo,vetor,r17,Qual a frequência exigida no estágio obrigatório?,2,2,rgcg-art019,0.8783
+multilingual-e5-small-fp32,artigo,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,3,rgcg-art019,0.8825
+multilingual-e5-small-fp32,artigo,vetor,r19,Como é calculado o índice de prioridade da matrícula?,9,2,rgcg-art053,0.8714
+multilingual-e5-small-fp32,artigo,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8482
+multilingual-e5-small-fp32,artigo,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8654
+multilingual-e5-small-fp32,artigo,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8656
+multilingual-e5-small-fp32,artigo,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,2,2,rgcg-art103,0.8428
+multilingual-e5-small-fp32,artigo,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,2,2,rgcg-art085,0.8603
+multilingual-e5-small-fp32,artigo,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,3,3,rgcg-art037,0.8921
+multilingual-e5-small-fp32,artigo,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,3,3,rgcg-art024,0.8673
+multilingual-e5-small-fp32,artigo,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,4,4,rgcg-art040,0.8705
+multilingual-e5-small-fp32,artigo,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-art117-p1,0.8912
+multilingual-e5-small-fp32,artigo,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.8861
+multilingual-e5-small-fp32,artigo,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,,10,rgcg-art036-p1,0.8532
+multilingual-e5-small-fp32,artigo,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8713
+multilingual-e5-small-fp32,artigo,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8849
+multilingual-e5-small-fp32,artigo,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8926
+multilingual-e5-small-fp32,artigo,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,9,9,rgcg-art060,0.8850
+multilingual-e5-small-fp32,artigo_secao,vetor,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8548
+multilingual-e5-small-fp32,artigo_secao,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,2,2,rgcg-art088,0.8745
+multilingual-e5-small-fp32,artigo_secao,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,4,4,rgcg-art074,0.8902
+multilingual-e5-small-fp32,artigo_secao,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,3,3,rgcg-art072,0.8929
+multilingual-e5-small-fp32,artigo_secao,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,2,2,rgcg-art079,0.8897
+multilingual-e5-small-fp32,artigo_secao,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-art079,0.9106
+multilingual-e5-small-fp32,artigo_secao,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,1,1,rgcg-art083,0.8733
+multilingual-e5-small-fp32,artigo_secao,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art085,0.8990
+multilingual-e5-small-fp32,artigo_secao,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art066-p1,0.8536
+multilingual-e5-small-fp32,artigo_secao,vetor,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8816
+multilingual-e5-small-fp32,artigo_secao,vetor,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8704
+multilingual-e5-small-fp32,artigo_secao,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art091,0.8662
+multilingual-e5-small-fp32,artigo_secao,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8902
+multilingual-e5-small-fp32,artigo_secao,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8860
+multilingual-e5-small-fp32,artigo_secao,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,2,2,rgcg-art019,0.9077
+multilingual-e5-small-fp32,artigo_secao,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8919
+multilingual-e5-small-fp32,artigo_secao,vetor,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.9004
+multilingual-e5-small-fp32,artigo_secao,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,3,3,rgcg-art019,0.8892
+multilingual-e5-small-fp32,artigo_secao,vetor,r19,Como é calculado o índice de prioridade da matrícula?,7,3,rgcg-art053,0.8806
+multilingual-e5-small-fp32,artigo_secao,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8540
+multilingual-e5-small-fp32,artigo_secao,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8759
+multilingual-e5-small-fp32,artigo_secao,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8753
+multilingual-e5-small-fp32,artigo_secao,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,3,3,rgcg-art105,0.8507
+multilingual-e5-small-fp32,artigo_secao,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,2,2,rgcg-art085,0.8647
+multilingual-e5-small-fp32,artigo_secao,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,2,2,rgcg-art041,0.8924
+multilingual-e5-small-fp32,artigo_secao,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8780
+multilingual-e5-small-fp32,artigo_secao,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,6,4,rgcg-art041,0.8642
+multilingual-e5-small-fp32,artigo_secao,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-art117-p1,0.8989
+multilingual-e5-small-fp32,artigo_secao,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.8944
+multilingual-e5-small-fp32,artigo_secao,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,4,2,rgcg-art036-p1,0.8559
+multilingual-e5-small-fp32,artigo_secao,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8777
+multilingual-e5-small-fp32,artigo_secao,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8953
+multilingual-e5-small-fp32,artigo_secao,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.8970
+multilingual-e5-small-fp32,artigo_secao,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,7,7,rgcg-art060,0.8856
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r01,Qual a nota mínima para passar numa disciplina?,1,1,rgcg-art082-p1,0.8581
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,2,2,rgcg-art088,0.8792
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,4,4,rgcg-art074,0.8830
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,5,5,rgcg-art072,0.8909
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,2,2,rgcg-art073,0.8915
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-art079,0.8940
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-art084,0.8731
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-art086,0.8988
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-art066-p1,0.8554
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r10,Quantas horas de núcleo livre preciso cursar?,1,1,rgcg-art012,0.8866
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r11,Qual o prazo máximo para concluir a graduação?,1,1,rgcg-art122,0.8779
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-art091,0.8670
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,1,1,rgcg-art037,0.8914
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,1,1,rgcg-art018-p1,0.8887
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,2,2,rgcg-art019,0.9010
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,1,1,rgcg-art022,0.8896
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r17,Qual a frequência exigida no estágio obrigatório?,1,1,rgcg-art087,0.8886
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,2,2,rgcg-art028,0.8882
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r19,Como é calculado o índice de prioridade da matrícula?,6,3,rgcg-art053,0.8852
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-art064,0.8496
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-art066-p1,0.8784
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-art101,0.8695
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,,,rgcg-art101,0.8390
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-art107,0.8707
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,3,3,rgcg-art037,0.8943
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-art093,0.8787
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,2,2,rgcg-art039,0.8662
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-art117-p2,0.8945
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-art016,0.8984
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,4,4,rgcg-art106,0.8570
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-art060,0.8698
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-art124,0.8939
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-art066-p1,0.9001
+multilingual-e5-small-fp32,artigo_sem_contexto,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,5,5,rgcg-art072,0.8810
+multilingual-e5-small-fp32,janela800,vetor,r01,Qual a nota mínima para passar numa disciplina?,6,5,rgcg-j800-123,0.8558
+multilingual-e5-small-fp32,janela800,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,10,2,rgcg-j800-091,0.8764
+multilingual-e5-small-fp32,janela800,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,1,1,rgcg-j800-078,0.8737
+multilingual-e5-small-fp32,janela800,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,3,1,rgcg-j800-082,0.8826
+multilingual-e5-small-fp32,janela800,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,1,1,rgcg-j800-078,0.8815
+multilingual-e5-small-fp32,janela800,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-j800-082,0.8959
+multilingual-e5-small-fp32,janela800,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-j800-088,0.8635
+multilingual-e5-small-fp32,janela800,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j800-089,0.8727
+multilingual-e5-small-fp32,janela800,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,4,4,rgcg-j800-086,0.8532
+multilingual-e5-small-fp32,janela800,vetor,r10,Quantas horas de núcleo livre preciso cursar?,9,4,rgcg-j800-093,0.8753
+multilingual-e5-small-fp32,janela800,vetor,r11,Qual o prazo máximo para concluir a graduação?,2,2,rgcg-j800-068,0.8676
+multilingual-e5-small-fp32,janela800,vetor,r12,Em que situações o aluno é jubilado da UFG?,,2,rgcg-j800-039,0.8746
+multilingual-e5-small-fp32,janela800,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,,,rgcg-j800-001,0.8813
+multilingual-e5-small-fp32,janela800,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,4,2,rgcg-j800-018,0.8913
+multilingual-e5-small-fp32,janela800,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,,,rgcg-j800-022,0.8944
+multilingual-e5-small-fp32,janela800,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,2,1,rgcg-j800-027,0.8820
+multilingual-e5-small-fp32,janela800,vetor,r17,Qual a frequência exigida no estágio obrigatório?,8,8,rgcg-j800-018,0.8865
+multilingual-e5-small-fp32,janela800,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,6,1,rgcg-j800-015,0.8837
+multilingual-e5-small-fp32,janela800,vetor,r19,Como é calculado o índice de prioridade da matrícula?,2,1,rgcg-j800-061,0.8846
+multilingual-e5-small-fp32,janela800,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,1,1,rgcg-j800-066,0.8459
+multilingual-e5-small-fp32,janela800,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-j800-068,0.8778
+multilingual-e5-small-fp32,janela800,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,1,1,rgcg-j800-101,0.8616
+multilingual-e5-small-fp32,janela800,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,6,3,rgcg-j800-125,0.8407
+multilingual-e5-small-fp32,janela800,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j800-106,0.8638
+multilingual-e5-small-fp32,janela800,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,,1,rgcg-j800-094,0.8969
+multilingual-e5-small-fp32,janela800,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j800-095,0.8795
+multilingual-e5-small-fp32,janela800,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,3,2,rgcg-j800-045,0.8719
+multilingual-e5-small-fp32,janela800,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,2,1,rgcg-j800-118,0.8923
+multilingual-e5-small-fp32,janela800,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-j800-018,0.8773
+multilingual-e5-small-fp32,janela800,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,10,1,rgcg-j800-086,0.8599
+multilingual-e5-small-fp32,janela800,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j800-065,0.8623
+multilingual-e5-small-fp32,janela800,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-j800-129,0.8741
+multilingual-e5-small-fp32,janela800,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j800-069,0.8901
+multilingual-e5-small-fp32,janela800,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,3,3,rgcg-j800-115,0.8709
+multilingual-e5-small-fp32,janela400,vetor,r01,Qual a nota mínima para passar numa disciplina?,,1,rgcg-j400-169,0.8641
+multilingual-e5-small-fp32,janela400,vetor,r02,Quantas faltas eu posso ter numa matéria do curso presencial?,,1,rgcg-j400-183,0.8777
+multilingual-e5-small-fp32,janela400,vetor,r03,Quantas vezes posso trancar a matrícula durante o curso?,6,6,rgcg-j400-079,0.8743
+multilingual-e5-small-fp32,janela400,vetor,r04,Posso trancar a matrícula logo no meu primeiro semestre?,7,3,rgcg-j400-158,0.8773
+multilingual-e5-small-fp32,janela400,vetor,r05,O semestre trancado conta no prazo para terminar o curso?,5,4,rgcg-j400-165,0.8858
+multilingual-e5-small-fp32,janela400,vetor,r06,Posso fazer estágio não obrigatório no semestre em que tranquei a matrícula?,1,1,rgcg-j400-166,0.8966
+multilingual-e5-small-fp32,janela400,vetor,r07,Perdi uma prova. Qual o prazo para pedir segunda chamada?,2,1,rgcg-j400-178,0.8764
+multilingual-e5-small-fp32,janela400,vetor,r08,Quanto tempo tenho para pedir revisão da nota de uma prova?,1,1,rgcg-j400-179,0.8859
+multilingual-e5-small-fp32,janela400,vetor,r09,Até quando posso contestar as faltas lançadas pelo professor?,,,rgcg-j400-182,0.8614
+multilingual-e5-small-fp32,janela400,vetor,r10,Quantas horas de núcleo livre preciso cursar?,,4,rgcg-j400-039,0.8730
+multilingual-e5-small-fp32,janela400,vetor,r11,Qual o prazo máximo para concluir a graduação?,9,2,rgcg-j400-137,0.8663
+multilingual-e5-small-fp32,janela400,vetor,r12,Em que situações o aluno é jubilado da UFG?,,,rgcg-j400-163,0.8646
+multilingual-e5-small-fp32,janela400,vetor,r13,Posso fazer dois cursos de graduação na UFG ao mesmo tempo?,,,rgcg-j400-154,0.8752
+multilingual-e5-small-fp32,janela400,vetor,r14,Quantas horas por dia posso fazer de estágio obrigatório?,10,3,rgcg-j400-037,0.8888
+multilingual-e5-small-fp32,janela400,vetor,r15,O estágio não obrigatório que fiz pode valer como estágio obrigatório?,,,rgcg-j400-046,0.8854
+multilingual-e5-small-fp32,janela400,vetor,r16,No estágio não obrigatório a empresa tem que pagar bolsa?,2,1,rgcg-j400-055,0.8770
+multilingual-e5-small-fp32,janela400,vetor,r17,Qual a frequência exigida no estágio obrigatório?,2,2,rgcg-j400-037,0.8850
+multilingual-e5-small-fp32,janela400,vetor,r18,Quanto do estágio não obrigatório posso usar como atividade complementar?,1,1,rgcg-j400-032,0.8932
+multilingual-e5-small-fp32,janela400,vetor,r19,Como é calculado o índice de prioridade da matrícula?,1,1,rgcg-j400-118,0.8859
+multilingual-e5-small-fp32,janela400,vetor,r20,Em que casos posso pedir quebra de pré-requisito?,4,1,rgcg-j400-137,0.8436
+multilingual-e5-small-fp32,janela400,vetor,r21,Perdi o prazo do calendário. Ainda consigo cancelar uma disciplina?,1,1,rgcg-j400-138,0.8757
+multilingual-e5-small-fp32,janela400,vetor,r22,Já domino o conteúdo de uma disciplina. Posso ser dispensado dela?,2,1,rgcg-j400-205,0.8799
+multilingual-e5-small-fp32,janela400,vetor,r23,Que nota preciso tirar na banca de extraordinário domínio?,2,2,rgcg-j400-204,0.8435
+multilingual-e5-small-fp32,janela400,vetor,r24,Reprovei por falta mas tirei nota 8. Tenho algum direito?,1,1,rgcg-j400-214,0.8793
+multilingual-e5-small-fp32,janela400,vetor,r25,Posso aproveitar matérias que cursei em outra faculdade antes de entrar na UFG?,1,1,rgcg-j400-187,0.8989
+multilingual-e5-small-fp32,janela400,vetor,r26,Quantas disciplinas o coordenador pode me autorizar a cursar em outra instituição?,1,1,rgcg-j400-191,0.8820
+multilingual-e5-small-fp32,janela400,vetor,r27,Estou grávida. Tenho direito a algum regime especial de estudos?,3,3,rgcg-j400-090,0.8682
+multilingual-e5-small-fp32,janela400,vetor,r28,Até quando devo protocolar o pedido de tratamento excepcional depois do atestado?,1,1,rgcg-j400-237,0.8918
+multilingual-e5-small-fp32,janela400,vetor,r29,Quanto tempo dura a hora-aula no curso noturno?,1,1,rgcg-j400-036,0.8942
+multilingual-e5-small-fp32,janela400,vetor,r30,O professor pode aplicar a próxima prova sem ter divulgado a nota da anterior?,3,3,rgcg-j400-082,0.8743
+multilingual-e5-small-fp32,janela400,vetor,r31,Tenho livro atrasado na biblioteca. Consigo fazer matrícula?,1,1,rgcg-j400-130,0.8631
+multilingual-e5-small-fp32,janela400,vetor,r32,Até quando preciso estar com a documentação regular para colar grau?,1,1,rgcg-j400-261,0.8674
+multilingual-e5-small-fp32,janela400,vetor,m01,"Em caso excepcional, até que dia posso cancelar uma disciplina em 2026/2 e o que conta como caso excepcional?",1,1,rgcg-j400-139,0.8935
+multilingual-e5-small-fp32,janela400,vetor,m02,Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?,9,9,rgcg-j400-164,0.8731

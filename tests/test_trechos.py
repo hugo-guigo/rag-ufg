@@ -15,6 +15,14 @@ def test_artigo_curto_vira_um_trecho_com_contexto():
     assert ts[0].texto_para_embedding() == "Título I: X > Art. 1\nArt. 1º Curto.\n§ 1º Também curto."
 
 
+def test_modos_de_contexto():
+    par = [Paragrafo("Art. 5º Texto.", 1, 5, "Título II: A > Capítulo I: B > Seção III: C")]
+    completo, secao, nenhum = (por_artigo(par, contexto=m)[0] for m in ("completo", "secao", "nenhum"))
+    assert completo.contexto == "Título II: A > Capítulo I: B > Seção III: C > Art. 5"
+    assert (secao.estrategia, secao.contexto) == ("artigo_secao", "Seção III: C > Art. 5")
+    assert (nenhum.estrategia, nenhum.texto_para_embedding()) == ("artigo_sem_contexto", "Art. 5º Texto.")
+
+
 def test_artigo_longo_divide_entre_paragrafos_e_numera_as_partes():
     grande = [p("Art. 9º " + "a" * 700, 9, 4), p("§ 1º " + "b" * 700, 9, 4), p("§ 2º " + "c" * 700, 9, 5)]
     ts = por_artigo(grande, max_chars=1500)
