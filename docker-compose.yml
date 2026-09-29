@@ -1,0 +1,20 @@
+# Banco local para desenvolvimento e testes. Em nuvem o mesmo schema roda no Neon.
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.1-pg17
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?defina no .env}
+      POSTGRES_DB: rag
+    ports:
+      - "127.0.0.1:5433:5432"  # 5433 para não brigar com outro Postgres local
+    volumes:
+      - dados_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d rag"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  dados_pg:

@@ -7,12 +7,17 @@ Feito até agora:
 - Download dos PDFs públicos com conferência de SHA-256 (`fontes.json`).
 - Extração do texto do RGCG (Resolução CEPEC 1791/2022) com página, artigo e seção de cada parágrafo.
 - Duas estratégias de divisão em trechos: por artigo e por janela fixa de 800 caracteres.
+- Calendário 2026 (Resolução CEPEC 1966/2025) extraído para `dados/calendario_2026.csv` (179 eventos).
+- Embeddings com multilingual-e5-small (ONNX int8, sem PyTorch) no PostgreSQL com pgvector.
 
 ```bash
 python -m venv .venv
 .venv/Scripts/activate        # Linux/macOS: source .venv/bin/activate
 pip install -r requirements-dev.txt
-python -m rag.fontes          # baixa os PDFs para dados/pdfs/
-python scripts/ver_trechos.py # estatísticas dos trechos
-pytest
+python scripts/gerar_env.py   # .env com senhas aleatórias
+docker compose up -d --wait   # Postgres 17 + pgvector em 127.0.0.1:5433
+python scripts/ingerir.py     # PDFs -> trechos -> embeddings -> banco
+python scripts/buscar.py "posso trancar a matrícula?"
+pytest                                    # testes sem banco
+RODAR_INTEGRACAO=1 pytest -m integracao   # testes com o banco
 ```
