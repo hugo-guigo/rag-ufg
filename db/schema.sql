@@ -40,3 +40,7 @@ CREATE TABLE IF NOT EXISTS eventos_calendario (
     pagina       int NOT NULL
 );
 CREATE INDEX IF NOT EXISTS eventos_calendario_datas ON eventos_calendario (data_inicio, data_fim);
+-- Etapa 5: embedding de cada evento (mesmo modelo dos trechos, int8) para a busca híbrida do agente.
+-- Sem coluna tsv gerada: unaccent não é IMMUTABLE e não entra em coluna gerada. Com 179 eventos, o
+-- to_tsvector na hora da consulta custa menos de 1 ms.
+ALTER TABLE eventos_calendario ADD COLUMN IF NOT EXISTS embedding vector(384);

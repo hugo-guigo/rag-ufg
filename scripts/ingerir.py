@@ -62,16 +62,20 @@ def main() -> None:
                 [(t.id, t.estrategia, embedder.nome, t.documento, t.texto, t.contexto, list(t.artigos),
                   t.pagina_inicio, t.pagina_fim, v) for t, v in zip(trechos, vetores)])
         eventos = ler_csv(CALENDARIO_CSV)
-        conexao.execute("DELETE FROM eventos_calendario")
-        with conexao.cursor() as cur:
-            cur.executemany(
-                """INSERT INTO eventos_calendario (documento, data_inicio, data_fim, descricao, categoria, pagina)
-                   VALUES ('calendario-2026', %s, %s, %s, %s, %s)""",
-                [(ev.data_inicio, ev.data_fim, ev.descricao, ev.categoria, ev.pagina) for ev in eventos])
+        if args.variante == "int8":  # o agente usa o int8; a variante fp32 só serve à comparação de busca
+            vetores_eventos = embedder.documentos([ev.descricao for ev in eventos])
+            conexao.execute("DELETE FROM eventos_calendario")
+            with conexao.cursor() as cur:
+                cur.executemany(
+                    """INSERT INTO eventos_calendario (documento, data_inicio, data_fim, descricao, categoria,
+                       pagina, embedding) VALUES ('calendario-2026', %s, %s, %s, %s, %s, %s)""",
+                    [(ev.data_inicio, ev.data_fim, ev.descricao, ev.categoria, ev.pagina, v)
+                     for ev, v in zip(eventos, vetores_eventos)])
     for estrategia, n in conexao.execute(
             "SELECT estrategia, count(*) FROM trechos WHERE modelo = %s GROUP BY 1 ORDER BY 1", (embedder.nome,)):
         print(f"  {estrategia}: {n} trechos")
-    print(f"  calendário: {len(eventos)} eventos")
+    if args.variante == "int8":
+        print(f"  calendário: {len(eventos)} eventos com embedding")
 
 
 if __name__ == "__main__":

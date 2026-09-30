@@ -32,11 +32,24 @@ SCHEMA = {
 }
 
 
+# Etapa 5: o agente também cita eventos do calendário. Mesmos critérios, com as duas fontes.
+REFERENCIA_SEM_RESPOSTA_AGENTE = "O regulamento (RGCG) e o calendário acadêmico não tratam disso."
+SISTEMA_AGENTE = (SISTEMA
+                  .replace("sobre o Regulamento Geral dos Cursos de Graduação (RGCG) da UFG.",
+                           "sobre o Regulamento Geral dos Cursos de Graduação (RGCG) e o Calendário Acadêmico da UFG.")
+                  .replace("os trechos do regulamento que o assistente citou", "os trechos do regulamento e os eventos do calendário que o assistente citou")
+                  .replace("a referência diz que o regulamento não trata", "a referência diz que as fontes não tratam")
+                  .replace("sobre o conteúdo do regulamento é não sustentada", "sobre o conteúdo das fontes é não sustentada")
+                  .replace("Número de artigo, parágrafo, prazo ou percentual", "Número de artigo, parágrafo, data, prazo ou percentual")
+                  .replace("sustentada pelos trechos citados", "sustentada pelas fontes citadas (trechos e eventos)")
+                  .replace("não bate com os trechos", "não bate com as fontes"))
+
+
 def julgar(cliente: ClienteGroq, pergunta: str, referencia: str, resposta: str,
-           trechos_citados: list[tuple[str, str]], modelo: str = MODELO_JUIZ) -> RespostaLLM:
+           trechos_citados: list[tuple[str, str]], modelo: str = MODELO_JUIZ, sistema: str = SISTEMA) -> RespostaLLM:
     """trechos_citados: pares (rótulo, texto)."""
     citados = "\n\n".join(f"{rot}\n{texto}" for rot, texto in trechos_citados) or "(nenhum trecho citado)"
     conteudo = (f"Pergunta: {pergunta}\n\nResposta de referência: {referencia}\n\n"
                 f"Resposta do assistente: {resposta}\n\nTrechos citados pelo assistente:\n\n{citados}")
-    return cliente.json(modelo, [{"role": "system", "content": SISTEMA}, {"role": "user", "content": conteudo}],
+    return cliente.json(modelo, [{"role": "system", "content": sistema}, {"role": "user", "content": conteudo}],
                         SCHEMA, "julgamento", max_tokens=600, estimativa_tokens=1800)

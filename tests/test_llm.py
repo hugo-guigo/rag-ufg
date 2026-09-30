@@ -4,7 +4,7 @@ import json
 import httpx
 import pytest
 
-from rag.llm import ClienteGroq, ErroLLM
+from rag.llm import MAX_ESPERAS_429, ClienteGroq, ErroLLM
 
 
 class Relogio:
@@ -54,7 +54,7 @@ def test_429_espera_o_retry_after_e_tenta_de_novo():
     relogio = Relogio()
     limite = httpx.Response(429, headers={"retry-after": "7"}, json={"error": "rate"})
     r = cliente([limite, ok({"a": 2})], relogio).json("m", [], SCHEMA, "x")
-    assert r.conteudo == {"a": 2} and r.tentativas == 2
+    assert r.conteudo == {"a": 2} and r.tentativas == 1  # esperar por 429 não gasta tentativa
     assert relogio.esperas == [7.0]
     assert r.ms_total >= 7000 > r.ms  # a espera entra no total, não na latência da chamada
 
@@ -88,10 +88,41 @@ def test_json_cortado_pelo_limite_tenta_uma_vez_com_o_dobro():
         cliente([cortado, cortado], Relogio()).json("m", [], SCHEMA, "x")
 
 
-def test_desiste_depois_de_muitos_429():
-    muitos = [httpx.Response(429, headers={"retry-after": "1"}) for _ in range(3)]
-    with pytest.raises(ErroLLM, match="desisti"):
+def test_429_nao_gasta_tentativas_mas_tem_limite_proprio():
+    relogio = Relogio()
+    poucos = [httpx.Response(429, headers={"retry-after": "1"}) for _ in range(4)]
+    assert cliente(poucos + [ok({"a": 1})], relogio).json("m", [], SCHEMA, "x", max_tentativas=3).conteudo == {"a": 1}
+    muitos = [httpx.Response(429, headers={"retry-after": "1"}) for _ in range(MAX_ESPERAS_429 + 1)]
+    with pytest.raises(ErroLLM, match="desisti depois de 3 tentativas e 10 esperas"):
         cliente(muitos, Relogio()).json("m", [], SCHEMA, "x", max_tentativas=3)
+
+
+def recusada(nome: str, argumentos) -> httpx.Response:
+    gerado = json.dumps({"name": nome, "arguments": argumentos})
+    return httpx.Response(400, json={"error": {"code": "tool_use_failed", "failed_generation": gerado,
+                                               "message": "Tool call validation failed"}})
+
+
+FERRAMENTA = [{"type": "function", "function": {"name": "responder", "parameters": {"type": "object"}}}]
+
+
+def test_nome_com_sufixo_do_harmony_e_consertado_sem_nova_chamada():
+    pedidos: list = []
+    c = cliente([recusada("responder<|channel|>commentary", {"resposta": "não sei"})], Relogio(), pedidos=pedidos)
+    r = c.ferramentas("openai/gpt-oss-20b", [], FERRAMENTA)
+    chamada = r.conteudo["tool_calls"][0]["function"]
+    assert chamada["name"] == "responder" and json.loads(chamada["arguments"]) == {"resposta": "não sei"}
+    assert len(pedidos) == 1 and c.chamadas_consertadas == 1 and r.tokens_entrada == 0
+
+
+def test_outras_chamadas_recusadas_nao_sao_consertadas():
+    # ferramenta que não foi oferecida, argumentos que não são objeto e nome sem sufixo: repete e falha
+    for resposta in (recusada("apagar<|channel|>commentary", {}), recusada("responder<|channel|>x", "texto"),
+                     recusada("responder", {"a": 1})):
+        c = cliente([resposta] * 3, Relogio())
+        with pytest.raises(ErroLLM, match="HTTP 400"):
+            c.ferramentas("m", [], FERRAMENTA)
+        assert c.chamadas_consertadas == 0 and c.chamadas_quebradas == 2
 
 
 def test_sem_chave_falha_cedo(monkeypatch):

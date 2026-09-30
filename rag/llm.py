@@ -5,9 +5,11 @@ Três cuidados:
   gastou nos últimos 60 s e espera antes de passar do limite, em vez de bater no 429.
 - 429 mesmo assim: respeita o cabeçalho retry-after (segundos) e tenta de novo.
 - Erro de rede ou 5xx: tenta de novo poucas vezes, com espera fixa. Erro 4xx de outro tipo não repete.
+Serve para as duas formas de chamada: saída JSON presa a um schema (json) e tool calling (ferramentas).
 """
 import json
 import os
+import re
 import time
 from collections import deque
 from collections.abc import Callable
@@ -17,6 +19,12 @@ import httpx
 
 URL = "https://api.groq.com/openai/v1/chat/completions"
 TPM_PLANO_GRATIS = 8000
+MAX_ESPERAS_429 = 10
+# O gpt-oss escreve no formato Harmony, em que o nome da ferramenta vem seguido do canal
+# ("responder<|channel|>commentary"). Às vezes o sufixo vaza para o nome, e o Groq recusa a chamada
+# com 400 tool_use_failed. Na avaliação da etapa 5 isso aconteceu sempre na mesma pergunta (s01), com
+# argumentos perfeitos: repetir não adianta.
+RE_SUFIXO_HARMONY = re.compile(r"<\|[a-z_]+\|>.*$")
 
 
 class ErroLLM(Exception):
@@ -46,6 +54,8 @@ class ClienteGroq:
         self.dormir, self.relogio = dormir, relogio
         self.gastos: dict[str, deque[tuple[float, int]]] = {}  # modelo -> (instante, tokens)
         self.limites_dobrados = 0
+        self.chamadas_quebradas = 0
+        self.chamadas_consertadas = 0
 
     def _esperar_vez(self, modelo: str, estimativa: int) -> None:
         gastos = self.gastos.setdefault(modelo, deque())
@@ -57,20 +67,21 @@ class ClienteGroq:
                 return
             self.dormir(60 - (agora - gastos[0][0]) + 0.1)
 
-    def json(self, modelo: str, mensagens: list[dict], schema: dict, nome: str,
-             max_tokens: int = 1024, estimativa_tokens: int = 2000, max_tentativas: int = 5) -> RespostaLLM:
-        corpo = {
-            "model": modelo,
-            "messages": mensagens,
-            "temperature": 0,
-            "max_completion_tokens": max_tokens,
-            "response_format": {"type": "json_schema", "json_schema": {"name": nome, "schema": schema, "strict": True}},
-        }
+    def _enviar(self, corpo: dict, estimativa_tokens: int, max_tentativas: int) -> tuple[dict, float, float, int]:
+        """Faz a requisição com as regras de ritmo e de retry. Devolve (json, ms, ms_total, tentativas).
+
+        Esperas por 429 não gastam tentativas: o limite por minuto sempre libera, e o Groq às vezes
+        pede esperas de 1 ou 2 s, que acabariam com 5 tentativas antes de a janela de 60 s passar.
+        """
+        modelo = corpo["model"]
         if modelo.startswith("openai/gpt-oss"):
             corpo |= {"reasoning_effort": "low", "include_reasoning": False}
         inicio = self.relogio()
         dobrou = False
-        for tentativa in range(1, max_tentativas + 1):
+        chamada_quebrada = esperas_429 = 0
+        tentativa = 0
+        while tentativa < max_tentativas:
+            tentativa += 1
             self._esperar_vez(modelo, estimativa_tokens)
             t0 = self.relogio()
             try:
@@ -81,6 +92,10 @@ class ClienteGroq:
                 self.dormir(2)
                 continue
             if r.status_code == 429:
+                if esperas_429 == MAX_ESPERAS_429:
+                    break
+                esperas_429 += 1
+                tentativa -= 1
                 self.dormir(min(float(r.headers.get("retry-after", 10)), 60))
                 continue
             if r.status_code >= 500 and tentativa < max_tentativas:
@@ -95,16 +110,86 @@ class ClienteGroq:
                 dobrou = True
                 self.limites_dobrados += 1
                 continue
+            if r.status_code == 400 and "tool_use_failed" in r.text:
+                consertada = consertar_chamada(r, corpo)
+                if consertada is not None:
+                    self.chamadas_consertadas += 1
+                    self.gastos[modelo].append((self.relogio(), estimativa_tokens))
+                    fim = self.relogio()
+                    return consertada, 1000 * (fim - t0), 1000 * (fim - inicio), tentativa
+                if chamada_quebrada < 2 and tentativa < max_tentativas:
+                    # Chamada de ferramenta que não é JSON válido: repete até 2 vezes.
+                    chamada_quebrada += 1
+                    self.chamadas_quebradas += 1
+                    continue
             if r.status_code != 200:
                 raise ErroLLM(f"HTTP {r.status_code}: {r.text[:300]}")
             dados = r.json()
-            uso = dados.get("usage", {})
-            self.gastos[modelo].append((self.relogio(), uso.get("total_tokens", estimativa_tokens)))
-            try:
-                conteudo = json.loads(dados["choices"][0]["message"]["content"])
-            except (KeyError, IndexError, json.JSONDecodeError) as erro:
-                raise ErroLLM(f"resposta fora do formato: {str(dados)[:300]}") from erro
+            self.gastos[modelo].append((self.relogio(), dados.get("usage", {}).get("total_tokens", estimativa_tokens)))
             fim = self.relogio()
-            return RespostaLLM(conteudo, modelo, uso.get("prompt_tokens", 0), uso.get("completion_tokens", 0),
-                               1000 * (fim - t0), 1000 * (fim - inicio), tentativa)
-        raise ErroLLM(f"desisti depois de {max_tentativas} tentativas (limite de requisições)")
+            return dados, 1000 * (fim - t0), 1000 * (fim - inicio), tentativa
+        raise ErroLLM(f"desisti depois de {max_tentativas} tentativas e {esperas_429} esperas por limite de requisições")
+
+    def json(self, modelo: str, mensagens: list[dict], schema: dict, nome: str,
+             max_tokens: int = 1024, estimativa_tokens: int = 2000, max_tentativas: int = 5) -> RespostaLLM:
+        corpo = {
+            "model": modelo,
+            "messages": mensagens,
+            "temperature": 0,
+            "max_completion_tokens": max_tokens,
+            "response_format": {"type": "json_schema", "json_schema": {"name": nome, "schema": schema, "strict": True}},
+        }
+        dados, ms, ms_total, tentativas = self._enviar(corpo, estimativa_tokens, max_tentativas)
+        uso = dados.get("usage", {})
+        try:
+            conteudo = json.loads(dados["choices"][0]["message"]["content"])
+        except (KeyError, IndexError, TypeError, json.JSONDecodeError) as erro:
+            raise ErroLLM(f"resposta fora do formato: {str(dados)[:300]}") from erro
+        return RespostaLLM(conteudo, modelo, uso.get("prompt_tokens", 0), uso.get("completion_tokens", 0),
+                           ms, ms_total, tentativas)
+
+    def ferramentas(self, modelo: str, mensagens: list[dict], ferramentas: list[dict], escolha: str | dict = "required",
+                    max_tokens: int = 1024, estimativa_tokens: int = 3000, max_tentativas: int = 5) -> RespostaLLM:
+        """Uma rodada de tool calling. conteudo = a mensagem do assistente (com "tool_calls").
+
+        escolha: "required" obriga a chamar alguma ferramenta; {"type": "function", "function": {"name": ...}}
+        obriga a chamar aquela.
+        """
+        corpo = {
+            "model": modelo,
+            "messages": mensagens,
+            "temperature": 0,
+            "max_completion_tokens": max_tokens,
+            "tools": ferramentas,
+            "tool_choice": escolha,
+        }
+        dados, ms, ms_total, tentativas = self._enviar(corpo, estimativa_tokens, max_tentativas)
+        uso = dados.get("usage", {})
+        try:
+            mensagem = dados["choices"][0]["message"]
+        except (KeyError, IndexError, TypeError) as erro:
+            raise ErroLLM(f"resposta fora do formato: {str(dados)[:300]}") from erro
+        return RespostaLLM(mensagem, modelo, uso.get("prompt_tokens", 0), uso.get("completion_tokens", 0),
+                           ms, ms_total, tentativas)
+
+
+def consertar_chamada(r: httpx.Response, corpo: dict) -> dict | None:
+    """Recupera a chamada recusada só no caso do sufixo do Harmony no nome.
+
+    Exige: failed_generation é JSON com "name" e "arguments" (objeto), e o nome sem o sufixo é uma das
+    ferramentas oferecidas na requisição. Qualquer outro erro de chamada continua sendo erro. Devolve uma
+    resposta no formato normal da API, sem "usage" (o Groq não informa os tokens da chamada recusada).
+    """
+    try:
+        gerado = json.loads(r.json()["error"]["failed_generation"])
+    except (KeyError, TypeError, ValueError):
+        return None
+    if not isinstance(gerado, dict) or not isinstance(gerado.get("arguments"), dict):
+        return None
+    nome = RE_SUFIXO_HARMONY.sub("", str(gerado.get("name", "")))
+    oferecidas = {f["function"]["name"] for f in corpo.get("tools", [])}
+    if nome == gerado.get("name") or nome not in oferecidas:
+        return None
+    chamada = {"id": "consertada-1", "type": "function",
+               "function": {"name": nome, "arguments": json.dumps(gerado["arguments"], ensure_ascii=False)}}
+    return {"choices": [{"message": {"role": "assistant", "content": None, "tool_calls": [chamada]}}], "usage": {}}

@@ -9,6 +9,13 @@ Feito até agora:
 - Duas estratégias de divisão em trechos: por artigo e por janela fixa de 800 caracteres.
 - Calendário 2026 (Resolução CEPEC 1966/2025) extraído para `dados/calendario_2026.csv` (179 eventos).
 - Embeddings com multilingual-e5-small (ONNX int8, sem PyTorch) no PostgreSQL com pgvector.
+- Agente com tool calling (`rag/agente.py`): o modelo escolhe entre buscar no regulamento e consultar o
+  calendário (busca híbrida com filtro de datas), com limite de 4 passos e erros de ferramenta devolvidos
+  ao modelo. Avaliação em `resultados/agente.md`.
+
+```bash
+python scripts/perguntar.py "quantas vezes posso trancar e qual o prazo em 2027/1?" --agente
+```
 
 ```bash
 python -m venv .venv

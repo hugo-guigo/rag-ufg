@@ -66,3 +66,22 @@ def test_usuario_app_so_le():
         conexao.execute("DELETE FROM trechos")
     with pytest.raises(psycopg.errors.InsufficientPrivilege):
         conexao.execute("INSERT INTO documentos VALUES ('x', 'x', 'x', repeat('0', 64))")
+
+
+def test_eventos_filtram_por_data_e_acham_trancamento_pelo_prefixo():
+    from datetime import date
+
+    from rag.banco import conectar
+    from rag.busca import buscar_eventos
+
+    conexao = conectar()
+    zero = unitario(1)  # vetor sem sentido: o acerto tem de vir do full-text com prefixo
+    # "trancar" tem radical "tranc"; os eventos dizem "trancamento" ("trancament"). Com prefixo, casa.
+    eventos = buscar_eventos(conexao, zero, "trancar", date(2026, 7, 1), date(2026, 12, 31), n=8)
+    assert eventos and all(e.data_fim >= date(2026, 7, 1) and e.data_inicio <= date(2026, 12, 31) for e in eventos)
+    assert any("trancamento de matrícula de 2026/2" in e.descricao for e in eventos)
+    assert [e.data_inicio for e in eventos] == sorted(e.data_inicio for e in eventos)
+    novembro = buscar_eventos(conexao, None, "", date(2026, 11, 1), date(2026, 11, 30), n=50)
+    assert any("Finados" in e.descricao for e in novembro)
+    with pytest.raises(ValueError):
+        buscar_eventos(conexao, None, "", date(2026, 11, 1), None)
