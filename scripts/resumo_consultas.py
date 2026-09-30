@@ -29,7 +29,7 @@ def main() -> None:
             print(f"{coluna:<{largura}}  {valor if valor is not None else '-'}")
         print()
     erros = conexao.execute(
-        """SELECT criado_em, status, left(erro, 120) FROM consultas
+        """SELECT criado_em AT TIME ZONE 'America/Sao_Paulo', status, left(erro, 120) FROM consultas
            WHERE erro IS NOT NULL AND criado_em > now() - make_interval(days => %s)
            ORDER BY criado_em DESC LIMIT 5""", (args.dias,)).fetchall()
     if erros:
