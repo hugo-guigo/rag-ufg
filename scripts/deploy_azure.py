@@ -26,7 +26,9 @@ AZ = shutil.which("az") or r"C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.
 
 
 def az(*args: str) -> str:
-    r = subprocess.run([AZ, *args, "--output", "json"], capture_output=True, text=True, encoding="utf-8")
+    # O az no Windows escreve em cp1252; um acento no nome da conta quebrava a leitura em UTF-8.
+    r = subprocess.run([AZ, *args, "--output", "json"], capture_output=True, text=True, encoding="utf-8",
+                       errors="replace", env={**os.environ, "PYTHONIOENCODING": "utf-8"})
     if r.returncode != 0:
         raise SystemExit(f"az {' '.join(args[:2])} falhou:\n{r.stderr[-1500:]}")
     return r.stdout
