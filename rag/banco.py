@@ -1,7 +1,8 @@
 """Conexão com o Postgres (local ou Neon) e criação do schema e do usuário da aplicação.
 
-Dois usuários: o admin cria tabelas e grava a ingestão; o "app" (que a API usa) só lê. Se a API for
-comprometida, ela não consegue apagar nem alterar os documentos.
+Dois usuários: o admin cria tabelas e grava a ingestão; o "app" (que a API usa) só lê os documentos
+e só insere no log de consultas. Se a API for comprometida, ela não consegue apagar nem alterar os
+documentos, nem reescrever o log.
 """
 import os
 from pathlib import Path
@@ -34,3 +35,5 @@ def preparar(conexao: psycopg.Connection, senha_app: str) -> None:
         conexao.execute(sql.SQL("GRANT CONNECT ON DATABASE {} TO app").format(sql.Identifier(banco)))
         conexao.execute("GRANT USAGE ON SCHEMA public TO app")
         conexao.execute("GRANT SELECT ON documentos, trechos, eventos_calendario TO app")
+        # A API grava o log de cada pergunta, mas não altera nem apaga linhas já gravadas.
+        conexao.execute("GRANT SELECT, INSERT ON consultas TO app")

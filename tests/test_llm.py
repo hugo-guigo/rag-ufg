@@ -4,7 +4,7 @@ import json
 import httpx
 import pytest
 
-from rag.llm import MAX_ESPERAS_429, ClienteGroq, ErroLLM
+from rag.llm import MAX_ESPERAS_429, ClienteGroq, ErroLLM, ErroOcupado
 
 
 class Relogio:
@@ -129,3 +129,26 @@ def test_sem_chave_falha_cedo(monkeypatch):
     monkeypatch.delenv("GROQ_API_KEY", raising=False)
     with pytest.raises(ErroLLM, match="GROQ_API_KEY"):
         ClienteGroq("")
+
+
+def test_com_max_espera_desiste_em_vez_de_esperar_um_minuto():
+    relogio = Relogio()
+    fila = iter([ok({"a": 1}, total=7000), httpx.Response(429, headers={"retry-after": "30"})])
+    c = ClienteGroq("gsk_teste", transporte=httpx.MockTransport(lambda req: next(fila)),
+                    dormir=relogio.dormir, relogio=relogio, max_espera=8)
+    c.json("m", [], SCHEMA, "x")
+    with pytest.raises(ErroOcupado) as erro:  # 7000 + 2000 > 8000: precisaria esperar ~60 s
+        c.json("m", [], SCHEMA, "x")
+    assert erro.value.segundos == pytest.approx(60.1) and relogio.esperas == []
+    relogio.agora = 61.0  # a janela passou; agora o Groq pede 30 s, também acima do limite
+    with pytest.raises(ErroOcupado, match="30 s"):
+        c.json("m", [], SCHEMA, "x")
+
+
+def test_limite_diario_informa_a_espera_real_e_nao_a_limitada_a_60_s():
+    diario = httpx.Response(429, headers={"retry-after": "563"}, json={"error": {"message": "tokens per day (TPD)"}})
+    c = ClienteGroq("gsk_teste", transporte=httpx.MockTransport(lambda req: diario), dormir=Relogio().dormir,
+                    relogio=Relogio(), max_espera=8)
+    with pytest.raises(ErroOcupado) as erro:
+        c.json("m", [], SCHEMA, "x")
+    assert erro.value.segundos == 563

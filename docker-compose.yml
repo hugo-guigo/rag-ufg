@@ -16,5 +16,19 @@ services:
       timeout: 3s
       retries: 30
 
+  # Etapa 6: a API no mesmo container que vai para a nuvem. Sobe com: docker compose --profile api up -d --build
+  api:
+    profiles: ["api"]
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://app:${APP_DB_PASSWORD}@postgres:5432/rag
+      GROQ_API_KEY: ${GROQ_API_KEY:?defina no .env}
+      SAL_CLIENTE: ${SAL_CLIENTE:?defina no .env (python scripts/gerar_env.py)}
+    ports:
+      - "127.0.0.1:8000:8080"
+
 volumes:
   dados_pg:

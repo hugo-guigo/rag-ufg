@@ -85,3 +85,37 @@ def test_eventos_filtram_por_data_e_acham_trancamento_pelo_prefixo():
     assert any("Finados" in e.descricao for e in novembro)
     with pytest.raises(ValueError):
         buscar_eventos(conexao, None, "", date(2026, 11, 1), None)
+
+
+def test_registro_grava_conta_e_app_nao_reescreve_o_log():
+    import uuid
+
+    from pgvector.psycopg import register_vector
+    from psycopg_pool import ConnectionPool
+
+    from rag.banco import conectar
+    from rag.registro import Registro
+
+    cliente = uuid.uuid4().hex[:16]  # linha nova e única: não interfere nas contagens de outros testes
+    with ConnectionPool(os.environ["DATABASE_URL"], min_size=1, max_size=1, open=True,
+                        kwargs={"autocommit": True}, configure=register_vector) as pool:
+        registro = Registro(pool)
+        antes = registro.contar(cliente)
+        base = {"cliente": cliente, "pergunta": "teste de integração", "ms_total": 12.7}
+        id_ = registro.gravar(base | {"status": 200, "ferramentas": ["buscar_regulamento", "responder"],
+                                      "tokens_entrada": 900})
+        registro.gravar(base | {"status": 429})  # bloqueada: não conta
+        depois = registro.contar(cliente)
+        assert (antes.no_minuto, depois.no_minuto, depois.no_dia) == (0, 1, 1)
+        assert depois.total_no_dia == antes.total_no_dia + 1
+        with pool.connection() as conexao:
+            linha = conexao.execute("SELECT ferramentas, tokens_entrada, ms_total FROM consultas WHERE id = %s",
+                                    (id_,)).fetchone()
+            assert linha == (["buscar_regulamento", "responder"], 900, 13)
+            with pytest.raises(psycopg.errors.InsufficientPrivilege):
+                conexao.execute("DELETE FROM consultas WHERE cliente = %s", (cliente,))
+            with pytest.raises(psycopg.errors.InsufficientPrivilege):
+                conexao.execute("UPDATE consultas SET status = 200 WHERE cliente = %s", (cliente,))
+        assert registro.banco_ok()
+    # o app não apaga o log; quem limpa as linhas do teste é o admin
+    conectar(admin=True).execute("DELETE FROM consultas WHERE cliente = %s", (cliente,))

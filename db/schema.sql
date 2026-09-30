@@ -44,3 +44,28 @@ CREATE INDEX IF NOT EXISTS eventos_calendario_datas ON eventos_calendario (data_
 -- Sem coluna tsv gerada: unaccent não é IMMUTABLE e não entra em coluna gerada. Com 179 eventos, o
 -- to_tsvector na hora da consulta custa menos de 1 ms.
 ALTER TABLE eventos_calendario ADD COLUMN IF NOT EXISTS embedding vector(384);
+
+-- Etapa 6: uma linha por pergunta que chega à API. Serve à observabilidade (latência, tokens,
+-- ferramentas, erros) e ao limite de requisições: contar no banco vale para todas as instâncias da
+-- nuvem, enquanto um contador em memória só vê a própria instância.
+CREATE TABLE IF NOT EXISTS consultas (
+    id                bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    criado_em         timestamptz NOT NULL DEFAULT now(),
+    cliente           text NOT NULL,        -- hash do IP com sal: conta requisições sem guardar o IP
+    status            smallint NOT NULL,    -- código HTTP devolvido
+    pergunta          text NOT NULL,
+    cobertura         text,
+    ferramentas       text[] NOT NULL DEFAULT '{}',
+    chamadas_llm      smallint NOT NULL DEFAULT 0,
+    erros_ferramenta  smallint NOT NULL DEFAULT 0,
+    forcou_resposta   boolean NOT NULL DEFAULT false,
+    citacoes          smallint NOT NULL DEFAULT 0,
+    tokens_entrada    int NOT NULL DEFAULT 0,
+    tokens_saida      int NOT NULL DEFAULT 0,
+    ms_total          int NOT NULL,
+    ms_llm            int NOT NULL DEFAULT 0,
+    ms_ferramentas    int NOT NULL DEFAULT 0,
+    erro              text
+);
+CREATE INDEX IF NOT EXISTS consultas_cliente_tempo ON consultas (cliente, criado_em);
+CREATE INDEX IF NOT EXISTS consultas_tempo ON consultas (criado_em);

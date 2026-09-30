@@ -6,10 +6,13 @@ Três cuidados:
 - 429 mesmo assim: respeita o cabeçalho retry-after (segundos) e tenta de novo.
 - Erro de rede ou 5xx: tenta de novo poucas vezes, com espera fixa. Erro 4xx de outro tipo não repete.
 Serve para as duas formas de chamada: saída JSON presa a um schema (json) e tool calling (ferramentas).
+Na API (etapa 6), max_espera limita quanto uma chamada pode esperar somando todas as esperas; passando
+disso, ErroOcupado, e a API responde 503 com Retry-After em vez de segurar a requisição por um minuto.
 """
 import json
 import os
 import re
+import threading
 import time
 from collections import deque
 from collections.abc import Callable
@@ -31,6 +34,14 @@ class ErroLLM(Exception):
     pass
 
 
+class ErroOcupado(ErroLLM):
+    """O limite por minuto do plano grátis exigiria esperar mais que max_espera."""
+
+    def __init__(self, segundos: float):
+        super().__init__(f"limite de uso do Groq: tente de novo em {segundos:.0f} s")
+        self.segundos = segundos
+
+
 @dataclass(frozen=True)
 class RespostaLLM:
     conteudo: dict
@@ -45,7 +56,8 @@ class RespostaLLM:
 class ClienteGroq:
     def __init__(self, chave: str | None = None, tpm: int = TPM_PLANO_GRATIS, timeout: float = 30.0,
                  transporte: httpx.BaseTransport | None = None,
-                 dormir: Callable[[float], None] = time.sleep, relogio: Callable[[], float] = time.monotonic):
+                 dormir: Callable[[float], None] = time.sleep, relogio: Callable[[], float] = time.monotonic,
+                 max_espera: float | None = None):
         chave = chave or os.environ.get("GROQ_API_KEY", "")
         if not chave:
             raise ErroLLM("GROQ_API_KEY vazia: coloque a chave no .env")
@@ -56,16 +68,31 @@ class ClienteGroq:
         self.limites_dobrados = 0
         self.chamadas_quebradas = 0
         self.chamadas_consertadas = 0
+        self.max_espera = max_espera
+        self.trava = threading.Lock()  # a API atende várias requisições em threads
 
-    def _esperar_vez(self, modelo: str, estimativa: int) -> None:
-        gastos = self.gastos.setdefault(modelo, deque())
+    def _dormir(self, segundos: float, esperado: float) -> float:
+        """Espera e devolve o total esperado na chamada. Com max_espera, desiste antes de passar dele."""
+        if self.max_espera is not None and esperado + segundos > self.max_espera:
+            raise ErroOcupado(segundos)
+        self.dormir(segundos)
+        return esperado + segundos
+
+    def _esperar_vez(self, modelo: str, estimativa: int, esperado: float = 0.0) -> float:
         while True:
-            agora = self.relogio()
-            while gastos and agora - gastos[0][0] >= 60:
-                gastos.popleft()
-            if not gastos or sum(t for _, t in gastos) + estimativa <= self.tpm:
-                return
-            self.dormir(60 - (agora - gastos[0][0]) + 0.1)
+            with self.trava:
+                gastos = self.gastos.setdefault(modelo, deque())
+                agora = self.relogio()
+                while gastos and agora - gastos[0][0] >= 60:
+                    gastos.popleft()
+                if not gastos or sum(t for _, t in gastos) + estimativa <= self.tpm:
+                    return esperado
+                espera = 60 - (agora - gastos[0][0]) + 0.1
+            esperado = self._dormir(espera, esperado)
+
+    def _registrar_gasto(self, modelo: str, tokens: int) -> None:
+        with self.trava:
+            self.gastos.setdefault(modelo, deque()).append((self.relogio(), tokens))
 
     def _enviar(self, corpo: dict, estimativa_tokens: int, max_tentativas: int) -> tuple[dict, float, float, int]:
         """Faz a requisição com as regras de ritmo e de retry. Devolve (json, ms, ms_total, tentativas).
@@ -80,26 +107,31 @@ class ClienteGroq:
         dobrou = False
         chamada_quebrada = esperas_429 = 0
         tentativa = 0
+        esperado = 0.0
         while tentativa < max_tentativas:
             tentativa += 1
-            self._esperar_vez(modelo, estimativa_tokens)
+            esperado = self._esperar_vez(modelo, estimativa_tokens, esperado)
             t0 = self.relogio()
             try:
                 r = self.http.post(URL, json=corpo)
             except httpx.TransportError as erro:  # timeout, conexão recusada
                 if tentativa == max_tentativas:
                     raise ErroLLM(f"rede: {erro}") from erro
-                self.dormir(2)
+                esperado = self._dormir(2, esperado)
                 continue
             if r.status_code == 429:
                 if esperas_429 == MAX_ESPERAS_429:
                     break
                 esperas_429 += 1
                 tentativa -= 1
-                self.dormir(min(float(r.headers.get("retry-after", 10)), 60))
+                pedido = float(r.headers.get("retry-after", 10))
+                if self.max_espera is not None and esperado + pedido > self.max_espera:
+                    # O tempo real, sem o teto de 60 s: no limite diário (TPD) o Groq pede minutos.
+                    raise ErroOcupado(pedido)
+                esperado = self._dormir(min(pedido, 60), esperado)
                 continue
             if r.status_code >= 500 and tentativa < max_tentativas:
-                self.dormir(2)
+                esperado = self._dormir(2, esperado)
                 continue
             if (r.status_code == 400 and "max completion tokens" in r.text and not dobrou
                     and tentativa < max_tentativas):
@@ -114,7 +146,7 @@ class ClienteGroq:
                 consertada = consertar_chamada(r, corpo)
                 if consertada is not None:
                     self.chamadas_consertadas += 1
-                    self.gastos[modelo].append((self.relogio(), estimativa_tokens))
+                    self._registrar_gasto(modelo, estimativa_tokens)
                     fim = self.relogio()
                     return consertada, 1000 * (fim - t0), 1000 * (fim - inicio), tentativa
                 if chamada_quebrada < 2 and tentativa < max_tentativas:
@@ -125,7 +157,7 @@ class ClienteGroq:
             if r.status_code != 200:
                 raise ErroLLM(f"HTTP {r.status_code}: {r.text[:300]}")
             dados = r.json()
-            self.gastos[modelo].append((self.relogio(), dados.get("usage", {}).get("total_tokens", estimativa_tokens)))
+            self._registrar_gasto(modelo, dados.get("usage", {}).get("total_tokens", estimativa_tokens))
             fim = self.relogio()
             return dados, 1000 * (fim - t0), 1000 * (fim - inicio), tentativa
         raise ErroLLM(f"desisti depois de {max_tentativas} tentativas e {esperas_429} esperas por limite de requisições")
