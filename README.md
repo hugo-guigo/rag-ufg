@@ -81,8 +81,21 @@ Acerto = um dos trechos devolvidos contém a frase anotada com a resposta. Resul
 
 Detalhes em [resultados/respostas.md](resultados/respostas.md) e [resultados/agente.md](resultados/agente.md).
 
-**Agente no conjunto de teste: pendente.** A rodada de avaliação de 50 perguntas esgota a cota diária de
-tokens do Groq, e a do teste ainda não terminou. O resultado entra aqui quando terminar.
+**Agente no conjunto de teste** (10 perguntas, rodado uma vez em 30/09/2026; detalhes em
+[resultados/agente_teste.md](resultados/agente_teste.md)):
+
+| | Avaliação | Teste |
+|---|---|---|
+| Regulamento: trecho certo recuperado | 28/32 (88%) | 2/7 (29%) |
+| Regulamento: correta (juiz) | 25/32 (78%) | 1/7 (14%) |
+| Regulamento: correta ou parcial | 28/32 (88%) | 4/7 (57%) |
+| Regulamento: fiel às fontes citadas | 25/30 (83%) | 3/6 (50%) |
+| Sem resposta: julgada correta | 8/8 | 1/3 |
+
+O teste confirma o que a busca já mostrava, e mostra um problema a mais: quando o trecho certo não vem,
+o modelo nem sempre diz que não sabe. Em parte das respostas ele completa com regras que não estão nos
+trechos citados (t03, t06, t10). Dez perguntas dão um número impreciso, mas a queda é grande demais para
+ser ruído.
 
 ## Decisões
 
@@ -134,8 +147,12 @@ tokens do Groq, e a do teste ainda não terminou. O resultado entra aqui quando 
 - **O conjunto de teste mostrou que a avaliação era otimista.** As perguntas de avaliação ficaram perto
   da linguagem do regulamento; as 10 de teste, em linguagem de aluno ("passar de uma matéria sem fazer
   prova"), derrubaram o R@5 de 88% para 43%. O embedding pequeno não liga "tragédia durante a prova" a
-  "segunda chamada". Reescrever a pergunta antes da busca ou usar um modelo de embedding maior são os
-  próximos passos, e precisam de um conjunto de teste novo para serem medidos.
+  "segunda chamada". Nas respostas do agente, só 1 de 7 perguntas de regulamento do teste saiu
+  totalmente correta (4 de 7 contando as parciais).
+- **Quando a busca falha, o modelo às vezes inventa.** No teste, metade das respostas com fonte trouxe
+  afirmação que não está nos trechos citados, contra 17% na avaliação. Reescrever a pergunta antes da
+  busca, usar um modelo de embedding maior e endurecer a regra de "não sei" são os próximos passos, e
+  precisam de um conjunto de teste novo para serem medidos.
 - **Conjuntos pequenos.** 50 + 10 perguntas, anotadas por uma pessoa. Diferenças de 1 ou 2 perguntas são
   ruído.
 - **Perguntas que ligam as duas fontes ainda falham.** "Em caso excepcional, até quando posso cancelar
@@ -221,7 +238,10 @@ decisions and agreed on 9/10 for correctness and 10/10 for faithfulness.
 - **Answers:** on the regulations the agent and the plain RAG pipeline tie within noise (25/32 vs 23/32
   correct), with 2.2x the input tokens. The real gain is the calendar: 7/8 correct and 12/12 expected
   events retrieved, which the plain pipeline cannot answer. Unanswerable questions: 8/8.
-- **Agent on the held-out test set:** pending; the 50-question run used up Groq's daily token quota.
+- **Agent on the held-out test set (10 questions, run once):** 1/7 regulation answers fully correct (4/7
+  correct or partial), the right chunk retrieved for 2/7, 3/6 faithful to the cited sources and 1/3
+  unanswerable questions handled correctly. When retrieval misses, the model sometimes fills the gap with
+  rules that are not in the sources.
 - **Cost:** about US$ 0.26 per thousand questions at Groq's paid prices; zero on the free tiers used here.
 
 ## Main decisions
@@ -237,7 +257,8 @@ global cap of 50 questions a day, derived from Groq's limit of 200k tokens per d
 ## Limitations
 
 The development set was optimistic: informal test questions halved retrieval recall, because the small
-embedding model does not link everyday words to the regulations' terms. Question sets are small. Questions
+embedding model does not link everyday words to the regulations' terms, and when retrieval missed, the
+model sometimes answered with rules that are not in the sources. Question sets are small. Questions
 that must connect both sources still fail. The demo shares the Groq daily quota with the evaluation
 scripts. Cold start after about 5 idle minutes took 6.5 s. Load, concurrency and authentication were not
 tested. A workaround repairs one specific malformed tool-call name that gpt-oss sometimes emits (3 times
