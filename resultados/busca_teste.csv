@@ -1,0 +1,8 @@
+modelo,estrategia,modo,id,pergunta,posicao_trecho,posicao_artigo,top1_id,top1_similaridade
+multilingual-e5-small-int8,artigo_secao,vetor,t01,o que acontece se ocorrer uma tragedia (tipo morte) durante uma prova de disciplina,,,rgcg-art115,0.8452
+multilingual-e5-small-int8,artigo_secao,vetor,t02,posso passar de uma materia sem fazer prova?,,,rgcg-art035,0.8556
+multilingual-e5-small-int8,artigo_secao,vetor,t03,tenho como pedir acompanhamento durante uma prova caso eu necessite?,1,1,rgcg-art117-p1,0.8540
+multilingual-e5-small-int8,artigo_secao,vetor,t07,um professor pode passar outra prova sem ter divulgado o resultado da prova anterior?,,5,rgcg-art035,0.8558
+multilingual-e5-small-int8,artigo_secao,vetor,t08,em que ocasioes um aluno pode ser expulso?,2,2,rgcg-art063,0.8534
+multilingual-e5-small-int8,artigo_secao,vetor,t09,quais as formas de ingresso na ufg?,1,1,rgcg-art032,0.9082
+multilingual-e5-small-int8,artigo_secao,vetor,t10,posso comecar o curso em uma faculdade e terminar em outra?,7,7,rgcg-art093,0.8717
