@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assistente do regulamento da UFG</title>
+<style>
+  :root { --fundo: #fbfaf7; --texto: #1d1d1b; --suave: #5f5e58; --borda: #dcd9d0; --destaque: #1f5f8b; --caixa: #ffffff; --erro: #9b2c2c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --fundo: #161615; --texto: #ecebe6; --suave: #a3a19a; --borda: #3a3935; --destaque: #7fb6dc; --caixa: #1f1f1d; --erro: #f0a0a0; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--suave); margin: 0 0 24px; }
+  form { display: flex; gap: 8px; flex-wrap: wrap; }
+  textarea { flex: 1 1 100%; min-height: 72px; padding: 10px 12px; font: inherit; color: inherit; background: var(--caixa); border: 1px solid var(--borda); border-radius: 8px; resize: vertical; }
+  button { padding: 9px 18px; font: inherit; border: 0; border-radius: 8px; background: var(--destaque); color: var(--fundo); cursor: pointer; }
+  button:disabled { opacity: .6; cursor: wait; }
+  .exemplos { margin: 10px 0 0; color: var(--suave); font-size: .9rem; }
+  .exemplos a { color: var(--destaque); cursor: pointer; text-decoration: underline; margin-right: 10px; }
+  #saida { margin-top: 28px; }
+  .resposta { background: var(--caixa); border: 1px solid var(--borda); border-radius: 8px; padding: 16px; white-space: pre-wrap; }
+  .meta { color: var(--suave); font-size: .85rem; margin: 8px 0 18px; }
+  h2 { font-size: 1rem; margin: 20px 0 8px; }
+  details { border-top: 1px solid var(--borda); padding: 8px 0; }
+  summary { cursor: pointer; }
+  details p { color: var(--suave); font-size: .9rem; white-space: pre-wrap; }
+  .erro { color: var(--erro); }
+  footer { margin-top: 48px; color: var(--suave); font-size: .85rem; }
+  footer a { color: var(--destaque); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Assistente do regulamento da UFG</h1>
+  <p class="sub">Responde sobre o Regulamento Geral dos Cursos de Graduação (RGCG) e o Calendário Acadêmico 2026, citando as fontes. Projeto de estudo: confira sempre nos documentos oficiais.</p>
+  <form id="form">
+    <textarea id="pergunta" maxlength="500" required placeholder="Ex.: Quantas vezes posso trancar o curso?"></textarea>
+    <button id="enviar" type="submit">Perguntar</button>
+  </form>
+  <p class="exemplos">Exemplos:
+    <a data-p="Qual a nota mínima para passar numa disciplina?">nota mínima</a>
+    <a data-p="Quando começa o segundo semestre de 2026?">início de 2026/2</a>
+    <a data-p="Quantas vezes posso trancar o curso e qual o prazo de trancamento em 2027/1?">trancamento</a>
+  </p>
+  <div id="saida" aria-live="polite"></div>
+  <footer>
+    As perguntas ficam gravadas no log (sem o seu IP); não escreva dados pessoais. Limite: 5 perguntas por minuto e 30 por dia.
+    A primeira pergunta depois de um tempo parado demora mais: o servidor liga sob demanda.
+    <br><a href="https://github.com/hugo-guigo/rag-ufg">Código e avaliação no GitHub</a> · <a href="docs">API</a>
+  </footer>
+</main>
+<script>
+  const form = document.getElementById("form"), campo = document.getElementById("pergunta");
+  const botao = document.getElementById("enviar"), saida = document.getElementById("saida");
+  const texto = (tag, conteudo, classe) => { const e = document.createElement(tag); e.textContent = conteudo; if (classe) e.className = classe; return e; };
+  document.querySelectorAll(".exemplos a").forEach(a => a.addEventListener("click", () => { campo.value = a.dataset.p; campo.focus(); }));
+  form.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    botao.disabled = true; saida.replaceChildren(texto("p", "Consultando as fontes...", "meta"));
+    try {
+      const r = await fetch("perguntar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ pergunta: campo.value }) });
+      const d = await r.json();
+      if (!r.ok) {
+        const msg = typeof d.detail === "string" ? d.detail : "Pergunta inválida: use de 3 a 500 caracteres.";
+        saida.replaceChildren(texto("p", msg, "erro")); return;
+      }
+      const cobertura = { total: "as fontes respondem", parcial: "resposta parcial", nenhuma: "as fontes não tratam disso" }[d.cobertura] || d.cobertura;
+      const blocos = [texto("div", d.resposta, "resposta"),
+        texto("p", `${cobertura} · ${(d.latencia_ms / 1000).toFixed(1)} s · ferramentas: ${d.ferramentas.map(f => f.nome).join(", ") || "nenhuma"}`, "meta")];
+      if (d.fontes.length) {
+        blocos.push(texto("h2", "Fontes citadas"));
+        for (const f of d.fontes) {
+          const det = document.createElement("details");
+          det.append(texto("summary", `${f.rotulo}: ${f.fonte}`), texto("p", f.texto));
+          blocos.push(det);
+        }
+      }
+      saida.replaceChildren(...blocos);
+    } catch (e) {
+      saida.replaceChildren(texto("p", "Não foi possível falar com o servidor. Tente de novo.", "erro"));
+    } finally { botao.disabled = false; }
+  });
+</script>
+</body>
+</html>

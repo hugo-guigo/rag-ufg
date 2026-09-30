@@ -1,0 +1,99 @@
+# Testes a cada push e PR. Na main: imagem no GitHub Container Registry e deploy no Azure Container Apps.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  testes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+
+  imagem:
+    # Constrói a imagem e confere que ela sobe e responde /health com um Postgres de verdade.
+    needs: testes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.1-pg17
+        env:
+          POSTGRES_USER: admin
+          POSTGRES_PASSWORD: admin-ci
+          POSTGRES_DB: rag
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U admin -d rag" --health-interval 2s --health-retries 30
+    env:
+      IMAGEM: ghcr.io/${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - name: Schema e usuário app no Postgres do CI
+        run: |
+          pip install -r requirements-api.txt
+          python scripts/preparar_banco.py
+        env:
+          DATABASE_URL_ADMIN: postgresql://admin:admin-ci@127.0.0.1:5432/rag
+          APP_DB_PASSWORD: app-ci
+      - run: docker build -t "$IMAGEM:${{ github.sha }}" .
+      - name: A imagem sobe e responde /health
+        run: |
+          docker run -d --name api --network host \
+            -e DATABASE_URL=postgresql://app:app-ci@127.0.0.1:5432/rag \
+            -e GROQ_API_KEY=sem-chave-no-ci -e SAL_CLIENTE=ci "$IMAGEM:${{ github.sha }}"
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8080/health && exit 0; sleep 1; done
+          docker logs api; exit 1
+      - name: Publica no GitHub Container Registry
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker tag "$IMAGEM:${{ github.sha }}" "$IMAGEM:latest"
+          docker push "$IMAGEM:${{ github.sha }}"
+          docker push "$IMAGEM:latest"
+
+  deploy:
+    # Só depois que a infraestrutura existe (scripts/deploy_azure.py grava as variáveis do repositório).
+    needs: imagem
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AZURE_CLIENT_ID != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # token OIDC trocado por um acesso temporário no Azure; nenhuma senha no repositório
+    concurrency: deploy
+    steps:
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Troca a imagem do Container App
+        run: |
+          az config set extension.use_dynamic_install=yes_without_prompt
+          az containerapp update -g rg-rag-ufg -n ca-rag-ufg \
+            --image "ghcr.io/${{ github.repository }}:${{ github.sha }}" --output none
+      - name: Teste de fumaça na URL pública
+        run: |
+          for i in $(seq 1 30); do
+            curl -sf --max-time 30 "${{ vars.API_URL }}/health" && exit 0
+            sleep 5
+          done
+          exit 1

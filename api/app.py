@@ -1,4 +1,4 @@
-"""API do assistente: POST /perguntar e GET /health.
+"""API do assistente: POST /perguntar, GET /health e uma página simples em GET /.
 
 Toda pergunta que passa da validação vira uma linha em consultas, inclusive as bloqueadas pelo limite
 (429) e as que falharam (500, 503). Assim o log mostra também o que deu errado, não só o que deu certo.
@@ -8,9 +8,10 @@ Rodar local: uvicorn api.app:app --port 8000   (precisa do .env com DATABASE_URL
 import logging
 import time
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
 from api.servicos import Servicos
@@ -18,6 +19,7 @@ from rag.llm import ErroLLM, ErroOcupado
 from rag.registro import hash_cliente
 
 log = logging.getLogger("api")
+PAGINA = Path(__file__).parent / "estatico" / "index.html"
 
 
 class Pergunta(BaseModel):
@@ -76,6 +78,10 @@ def criar_app(montar_servicos) -> FastAPI:
                   description="Perguntas sobre o RGCG e o Calendário Acadêmico 2026 da UFG, com as fontes citadas. "
                               "Projeto de estudo: confira sempre nos documentos oficiais. As perguntas ficam "
                               "gravadas no log; não escreva dados pessoais.")
+
+    @app.get("/", include_in_schema=False)
+    def pagina():
+        return FileResponse(PAGINA, media_type="text/html; charset=utf-8")
 
     @app.get("/health")
     def health(request: Request):

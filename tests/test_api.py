@@ -158,3 +158,10 @@ def test_ip_atras_do_proxy_usa_o_ultimo_x_forwarded_for():
     assert ip_do_cliente(Req("1.2.3.4, 200.10.20.30"), confiar_proxy=True) == "200.10.20.30"
     assert ip_do_cliente(Req("1.2.3.4"), confiar_proxy=False) == "10.0.0.1"
     assert ip_do_cliente(Req(None), confiar_proxy=True) == "10.0.0.1"
+
+
+def test_pagina_inicial_e_servida_pela_propria_api():
+    with cliente_http()[0] as http:
+        r = http.get("/")
+    assert r.status_code == 200 and r.headers["content-type"].startswith("text/html")
+    assert 'fetch("perguntar"' in r.text  # caminho relativo: mesma origem, sem CORS
