@@ -81,7 +81,17 @@ class RegistroMCP:
             conexao.execute(INSERCAO, valores)
 
 
-async def _responder(send, status: int, corpo: dict, cabecalhos: dict[str, str]) -> None:
+# Erros do middleware em JSON-RPC (códigos na faixa que a especificação reserva ao servidor). O cliente do
+# SDK repassa um corpo JSON-RPC como está; um corpo qualquer viraria um erro genérico, sem o status HTTP,
+# e o cliente não saberia se pode repetir (503, 429) ou não (401).
+CODIGOS = {401: -32001, 429: -32002, 503: -32003}
+
+
+async def _responder(send, status: int, mensagem: str, cabecalhos: dict[str, str]) -> None:
+    dados_erro = {"http_status": status}
+    if "Retry-After" in cabecalhos:
+        dados_erro["retry_after"] = int(cabecalhos["Retry-After"])
+    corpo = {"jsonrpc": "2.0", "id": None, "error": {"code": CODIGOS[status], "message": mensagem, "data": dados_erro}}
     dados = json.dumps(corpo, ensure_ascii=False).encode()
     lista = [(b"content-type", b"application/json"), (b"content-length", str(len(dados)).encode())]
     lista += [(k.lower().encode(), v.encode()) for k, v in cabecalhos.items()]
@@ -103,25 +113,26 @@ class ExigirToken:
         cabecalho = dict(scope.get("headers") or []).get(b"authorization", b"").decode("latin-1")
         esquema, _, token = cabecalho.partition(" ")
         if esquema.lower() != "bearer" or not token.strip():
-            return await _responder(send, 401, {"erro": "envie Authorization: Bearer <token>"},
+            return await _responder(send, 401, "envie Authorization: Bearer <token>",
                                     {"WWW-Authenticate": f'Bearer realm="{REALM}"'})
         registro = self.registro()
         if registro is None:
-            return await _responder(send, 503, {"erro": "MCP desligado nesta instância"}, {})
+            return await _responder(send, 503, "MCP desligado nesta instância", {})
         try:
             cliente = await anyio.to_thread.run_sync(registro.cliente_do_token, token.strip())
             contagem = await anyio.to_thread.run_sync(registro.contar, cliente) if cliente else None
         except Exception:
             log.exception("banco fora do ar ao conferir o token")
-            return await _responder(send, 503, {"erro": "banco de dados indisponível; tente mais tarde"},
-                                    {"Retry-After": "30"})
+            # 5 s: uma queda curta do banco não deve segurar uma pergunta interativa por muito tempo.
+            return await _responder(send, 503, "banco de dados indisponível; tente mais tarde",
+                                    {"Retry-After": "5"})
         if cliente is None:
-            return await _responder(send, 401, {"erro": "token inválido ou revogado"},
+            return await _responder(send, 401, "token inválido ou revogado",
                                     {"WWW-Authenticate": f'Bearer realm="{REALM}", error="invalid_token"'})
         bloqueio = contagem.bloqueio(self.limites)
         if bloqueio:
             motivo, segundos = bloqueio
-            return await _responder(send, 429, {"erro": f"você atingiu o {motivo} do MCP"},
+            return await _responder(send, 429, f"você atingiu o {motivo} do MCP",
                                     {"Retry-After": str(segundos)})
         scope[CHAVE_CLIENTE] = cliente
         await self.app(scope, receive, send)
