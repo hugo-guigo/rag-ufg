@@ -12,9 +12,14 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
+from mcp.server.transport_security import TransportSecuritySettings
+from starlette.routing import Route
 from pydantic import BaseModel, Field, field_validator
 
 from api.servicos import Servicos
+from mcp_ufg.http import ExigirToken, hosts_permitidos, limites_do_ambiente
+from mcp_ufg.rastreio import Rastreio
+from mcp_ufg.servidor import criar_servidor
 from rag.llm import ErroLLM, ErroOcupado
 from rag.registro import hash_cliente
 
@@ -64,13 +69,42 @@ def ip_do_cliente(request: Request, confiar_proxy: bool) -> str:
     return request.client.host if request.client else "desconhecido"
 
 
-def criar_app(montar_servicos) -> FastAPI:
+class _AcervoDaApi:
+    """As ferramentas MCP consultam o acervo montado no início da API (os serviços nascem no lifespan)."""
+
+    def __init__(self, app: FastAPI):
+        self.app = app
+
+    def __getattr__(self, nome):
+        return getattr(self.app.state.servicos.acervo, nome)
+
+
+class _SemBarra:
+    """/mcp e /mcp/ são o mesmo endpoint. Sem isto, /mcp responderia 307 para /mcp/, e nem todo cliente
+    MCP segue redirecionamento de POST. É uma classe (app ASGI) porque o Route do Starlette trataria uma
+    função como endpoint que recebe Request."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        scope = dict(scope, path=scope["path"] + "/", raw_path=scope.get("raw_path", b"") + b"/",
+                     root_path=scope.get("root_path", "") + "/mcp")
+        await self.app(scope, receive, send)
+
+
+def criar_app(montar_servicos, limites_mcp=None) -> FastAPI:
     """montar_servicos: função sem argumentos que devolve Servicos (chamada ao subir a API)."""
+
+    def gravar_rastreio(registro: dict) -> None:
+        if app.state.servicos.registro_mcp:
+            app.state.servicos.registro_mcp.gravar(registro)
 
     @asynccontextmanager
     async def ciclo(app: FastAPI):
         app.state.servicos = montar_servicos()
-        yield
+        async with servidor_mcp.session_manager.run():
+            yield
         if app.state.servicos.fechar:
             app.state.servicos.fechar()
 
@@ -78,6 +112,16 @@ def criar_app(montar_servicos) -> FastAPI:
                   description="Perguntas sobre o RGCG e o Calendário Acadêmico 2026 da UFG, com as fontes citadas. "
                               "Projeto de estudo: confira sempre nos documentos oficiais. As perguntas ficam "
                               "gravadas no log; não escreva dados pessoais.")
+
+    # MCP em Streamable HTTP, sem estado (o app pode ir a zero réplicas), respostas em JSON e só com token.
+    servidor_mcp = criar_servidor(_AcervoDaApi(app), middleware=[Rastreio(gravar_rastreio)])
+    app_mcp = servidor_mcp.streamable_http_app(
+        streamable_http_path="/", stateless_http=True, json_response=True,
+        transport_security=TransportSecuritySettings(allowed_hosts=hosts_permitidos(), allowed_origins=[]))
+    protegido = ExigirToken(app_mcp, lambda: app.state.servicos.registro_mcp, limites_mcp or limites_do_ambiente())
+
+    app.router.routes.append(Route("/mcp", _SemBarra(protegido), methods=["GET", "POST", "DELETE"]))
+    app.mount("/mcp", protegido)
 
     @app.get("/", include_in_schema=False)
     def pagina():

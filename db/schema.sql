@@ -69,3 +69,30 @@ CREATE TABLE IF NOT EXISTS consultas (
 );
 CREATE INDEX IF NOT EXISTS consultas_cliente_tempo ON consultas (cliente, criado_em);
 CREATE INDEX IF NOT EXISTS consultas_tempo ON consultas (criado_em);
+
+-- MCP (servidor em /mcp): um token por cliente, guardado só como SHA-256. O token em claro aparece uma
+-- vez, quando é criado (scripts/token_mcp.py); revogar é marcar revogado_em, sem apagar a linha.
+CREATE TABLE IF NOT EXISTS clientes_mcp (
+    id            text PRIMARY KEY,               -- nome legível do cliente, ex.: claude-code-hugo
+    token_sha256  char(64) NOT NULL UNIQUE,
+    criado_em     timestamptz NOT NULL DEFAULT now(),
+    revogado_em   timestamptz
+);
+
+-- Uma linha por chamada de ferramenta pelo HTTP: rastreio e base do limite de uso do MCP, como a
+-- tabela consultas é para a API. Sem o texto dos argumentos, só o tamanho (ver mcp_ufg/rastreio.py).
+CREATE TABLE IF NOT EXISTS chamadas_mcp (
+    id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    criado_em   timestamptz NOT NULL DEFAULT now(),
+    rastreio    text NOT NULL,
+    requisicao  text,
+    cliente     text NOT NULL,
+    ferramenta  text NOT NULL,
+    argumentos  jsonb NOT NULL DEFAULT '{}',
+    ok          boolean NOT NULL,
+    erro        text,
+    ms          int NOT NULL,
+    bytes       int NOT NULL
+);
+CREATE INDEX IF NOT EXISTS chamadas_mcp_cliente_tempo ON chamadas_mcp (cliente, criado_em);
+CREATE INDEX IF NOT EXISTS chamadas_mcp_tempo ON chamadas_mcp (criado_em);

@@ -37,3 +37,6 @@ def preparar(conexao: psycopg.Connection, senha_app: str) -> None:
         conexao.execute("GRANT SELECT ON documentos, trechos, eventos_calendario TO app")
         # A API grava o log de cada pergunta, mas não altera nem apaga linhas já gravadas.
         conexao.execute("GRANT SELECT, INSERT ON consultas TO app")
+        # MCP: a API confere tokens (só lê; criar e revogar é com o admin) e grava cada chamada.
+        conexao.execute("GRANT SELECT ON clientes_mcp TO app")
+        conexao.execute("GRANT SELECT, INSERT ON chamadas_mcp TO app")

@@ -19,6 +19,8 @@ class Servicos:
     limites: Limites = field(default_factory=Limites)
     confiar_proxy: bool = False  # True atrás do proxy da nuvem, que informa o IP em X-Forwarded-For
     fechar: object = None
+    acervo: object = None  # o que as ferramentas MCP consultam (mcp_ufg.ferramentas.AcervoPool)
+    registro_mcp: object = None  # tokens, limite e rastreio do MCP (mcp_ufg.http.RegistroMCP)
 
 
 def _inteiro(nome: str, padrao: int) -> int:
@@ -39,8 +41,12 @@ def servicos_do_ambiente() -> Servicos:
         configure=register_vector)
     embedder = Embedder("int8")
     embedder.pergunta("aquecimento")  # a primeira inferência do ONNX é mais lenta; paga no início
-    agente = Agente(FontesPool(pool, embedder), ClienteGroq(max_espera=MAX_ESPERA_GROQ))
+    fontes = FontesPool(pool, embedder)
+    agente = Agente(fontes, ClienteGroq(max_espera=MAX_ESPERA_GROQ))
     limites = Limites(_inteiro("LIMITE_POR_MINUTO", 5), _inteiro("LIMITE_POR_DIA", 30),
                       _inteiro("LIMITE_TOTAL_POR_DIA", 50))
+    from mcp_ufg.ferramentas import AcervoPool
+    from mcp_ufg.http import RegistroMCP
+
     return Servicos(agente, Registro(pool), os.environ["SAL_CLIENTE"], limites,
-                    os.environ.get("CONFIAR_PROXY") == "1", pool.close)
+                    os.environ.get("CONFIAR_PROXY") == "1", pool.close, AcervoPool(fontes, pool), RegistroMCP(pool))
