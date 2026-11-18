@@ -81,6 +81,8 @@ resource app 'Microsoft.App/containerApps@2024-03-01' = {
             { name: 'GROQ_API_KEY', secretRef: 'groq-api-key' }
             { name: 'SAL_CLIENTE', secretRef: 'sal-cliente' }
             { name: 'CONFIAR_PROXY', value: '1' } // o ingress do Container Apps informa o IP em X-Forwarded-For
+            // MCP: o SDK só aceita requisições com Host conhecido (proteção contra DNS rebinding)
+            { name: 'MCP_HOSTS', value: 'ca-${nome}.${ambiente.properties.defaultDomain}' }
           ]
         }
       ]
