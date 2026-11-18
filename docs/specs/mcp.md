@@ -63,8 +63,7 @@ como "falha interna", sem detalhe do banco. Cada ferramenta tem timeout (padrão
    código que mais dá errado; (b) Keycloak ou outro IdP em container, que no Azure precisaria de uma
    réplica sempre ligada e sairia do plano grátis; (c) Entra ID, que não tem o registro dinâmico de
    clientes que os clientes MCP usam. Como os dados são públicos e o risco é abuso da cota, um token
-   por cliente resolve: guardado só como SHA-256, com escopo, revogável, e conferido em toda
-   requisição. O ponto de troca fica explícito: um `TokenVerifier` de JWT do SDK no lugar da consulta
+   por cliente resolve: guardado só como SHA-256, revogável e conferido em toda requisição. O ponto de troca fica explícito: um `TokenVerifier` de JWT do SDK no lugar da consulta
    ao banco, se um IdP entrar.
 5. **Middleware próprio para o Bearer, não o do SDK.** O SDK só liga a conferência de token junto com
    a URL de um servidor de autorização, que ele publica no metadata OAuth. Publicar uma URL que não
@@ -112,4 +111,32 @@ como "falha interna", sem detalhe do banco. Cada ferramenta tem timeout (padrão
 
 ## Registro da revisão
 
-(preenchido durante o trabalho)
+O que mudou entre a especificação e o código, e o que a revisão pegou:
+
+1. **Escopo por token, recusado.** A decisão 4 previa token "com escopo". As duas ferramentas e o recurso
+   são de leitura e servem a qualquer cliente; um escopo único não protegeria nada. Ficou token por
+   cliente, revogável. Escopo entra se aparecer uma ferramenta que escreve.
+2. **Recurso com o erro errado.** O recurso `ufg://fontes` usava o mesmo tratamento das ferramentas, que
+   levanta `ToolError`; para recurso, o SDK espera `ResourceError`. Corrigido antes do primeiro teste.
+3. **`/mcp` respondia 307.** Montado em `/mcp`, o endpoint só casava com `/mcp/`, e o roteador do FastAPI
+   redirecionava `/mcp`. A primeira tentativa (reescrever o caminho dentro do middleware de token) não
+   funcionou, porque o redirecionamento acontece antes do middleware. A segunda precisou de uma classe,
+   porque o `Route` do Starlette trata uma função como endpoint que recebe `Request`, não como app ASGI.
+   Nem todo cliente MCP segue redirecionamento de POST, e `/mcp` é a URL que as pessoas digitam.
+4. **401, 429 e 503 chegavam iguais ao cliente.** O cliente do SDK transforma qualquer resposta não 2xx
+   num erro genérico, sem o status, a menos que o corpo seja um erro JSON-RPC. Sem o status, o retry não
+   distinguia o que repetir. O middleware passou a responder em JSON-RPC (códigos -32001, -32002 e -32003)
+   com o status HTTP e o Retry-After no `data`.
+5. **Retry-After longo demais.** Com o banco fora, o middleware mandava Retry-After de 30 s, e o cliente
+   desiste de esperas acima de 15 s: o retry nunca acontecia. Baixou para 5 s. O teste também estava
+   errado: cada tentativa de conexão faz duas requisições (o SDK tenta o handshake novo e depois o
+   antigo), então as falhas simuladas se esgotavam numa tentativa só.
+6. **Imagem sem o pacote novo.** O Dockerfile copiava só `rag` e `api`; a imagem subiria sem `mcp_ufg` e
+   a API quebraria na importação. Pego ao construir a imagem localmente antes do CI; o CI ganhou um passo
+   que confere 401 em `/mcp` sem token.
+7. **Contrato conferido por mutação.** O teste de contrato compara o que o servidor anuncia com um
+   arquivo registrado. Para confirmar que ele pega mudança, a descrição de um parâmetro foi alterada: o
+   teste falhou, e voltou a passar quando a mudança foi desfeita.
+8. **Laço do cliente separado do agente.** Recusado reaproveitar a classe `Agente`: ela lê os argumentos
+   pelo schema fixo dela (`consulta`), e o cliente usa o schema que o servidor anuncia (`pergunta`, `k`).
+   O prompt, a ferramenta `responder` e a validação da resposta final vêm do agente.

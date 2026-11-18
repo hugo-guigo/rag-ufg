@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "assistente-ufg": {
+      "command": "python",
+      "args": ["-m", "mcp_ufg"],
+      "env": { "PYTHONPATH": "." }
+    }
+  }
+}

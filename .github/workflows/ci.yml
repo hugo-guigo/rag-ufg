@@ -60,8 +60,13 @@ jobs:
           docker run -d --name api --network host \
             -e DATABASE_URL=postgresql://app:app-ci@127.0.0.1:5432/rag \
             -e GROQ_API_KEY=sem-chave-no-ci -e SAL_CLIENTE=ci "$IMAGEM:${{ github.sha }}"
-          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8080/health && exit 0; sleep 1; done
-          docker logs api; exit 1
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8080/health && break; sleep 1; done
+          curl -sf http://127.0.0.1:8080/health || { docker logs api; exit 1; }
+      - name: O endpoint MCP exige token
+        run: |
+          status=$(curl -s -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' -d '{}' http://127.0.0.1:8080/mcp)
+          echo "POST /mcp sem token: $status"
+          test "$status" = "401" || { docker logs api; exit 1; }
       - name: Publica no GitHub Container Registry
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |

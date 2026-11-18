@@ -166,10 +166,91 @@ ser ruído.
 - **Contorno de um bug do provedor.** O gpt-oss às vezes escreve o nome da ferramenta com um sufixo do
   formato interno ("responder<|channel|>commentary"), e o Groq recusa a chamada. O cliente conserta só
   esse caso, em condições estritas, e conta quantas vezes: 3 nas 50 perguntas de avaliação.
-- **Não testado:** carga e concorrência (a demo tem no máximo 1 réplica), autenticação (a API é pública,
-  com limite por IP) e documentos além do RGCG de 2022 e do calendário de 2026.
+- **Não testado:** carga e concorrência (a demo tem no máximo 1 réplica) e documentos além do RGCG de 2022
+  e do calendário de 2026. O `POST /perguntar` continua público, com limite por IP; só o `/mcp` exige token.
 - **Neon grátis:** projetos parados por 90 dias podem ser apagados; a ingestão recria o banco em cerca de
   1 minuto.
+
+## Servidor e cliente MCP
+
+As mesmas buscas também são expostas pelo Model Context Protocol (MCP), com o SDK oficial em Python
+(`mcp` 2.3, em que o antigo FastMCP se chama `MCPServer`). Qualquer cliente MCP pode usar o regulamento e o
+calendário como ferramentas; o repositório tem também um cliente próprio. Especificação e registro da
+revisão: [docs/specs/mcp.md](docs/specs/mcp.md).
+
+```mermaid
+flowchart LR
+  CC[Claude Code ou outro cliente MCP] -->|stdio| S[Servidor MCP: python -m mcp_ufg]
+  CL[Cliente próprio: scripts/cliente_mcp.py] -->|stdio| S
+  CL -->|tool calling| G[gpt-oss-20b no Groq]
+  CL -->|Streamable HTTP com Bearer| H[/mcp na API FastAPI]
+  H --> S
+  S -->|mesma busca da API| V[(Postgres + pgvector)]
+  H -->|token, limite e rastreio| T[(clientes_mcp e chamadas_mcp)]
+```
+
+- **Ferramentas:** `buscar_regulamento(pergunta, k)` e `consultar_calendario(termo, data_inicio, data_fim)`,
+  só de leitura, com entrada e saída tipadas (Pydantic) e o schema de saída anunciado. O recurso
+  `ufg://fontes` lista os documentos indexados com URL e SHA-256. Erro que o modelo pode corrigir volta com
+  mensagem dizendo o que mudar; erro interno volta como "falha interna", sem detalhe do banco; cada
+  chamada tem timeout de 10 s.
+- **Transportes:** stdio para uso local e Streamable HTTP em `/mcp` na própria API, sem estado (o app vai
+  a zero réplicas e volta sem sessão para perder).
+- **Autenticação no HTTP:** token Bearer por cliente, guardado só como SHA-256 e revogável
+  (`scripts/token_mcp.py`). Sem token ou com token inválido, 401 com `WWW-Authenticate`. O fluxo OAuth da
+  especificação MCP não foi implementado: exigiria um servidor de autorização próprio (autenticação
+  artesanal) ou um IdP sempre ligado, fora do plano grátis; o motivo completo está na especificação.
+- **Limite:** contado no Postgres por cliente (30 por minuto, 500 por dia e 2.000 no total por dia, por
+  padrão), como o da API, para valer em todas as instâncias. Acima dele, 429 com `Retry-After`.
+- **Rastreio:** uma linha JSON por chamada de ferramenta (id de rastreio, cliente, ferramenta, latência,
+  ok ou erro, tamanho da resposta), também gravada na tabela `chamadas_mcp` no HTTP. O texto da pergunta
+  entra só como tamanho.
+- **Cliente:** conecta, lista as ferramentas e monta a lista do LLM a partir do que o servidor anunciou;
+  o resultado volta rotulado (T1, E1...) para o modelo citar. Retry com backoff exponencial de verdade
+  (espera sorteada entre 0 e `min(8 s, 0,5 s × 2^n)`, até 4 tentativas, reconectando antes de repetir), só
+  em erro transitório (conexão, timeout, 429, 502, 503, 504); 401 e argumento inválido não repetem; um
+  `Retry-After` do servidor vale como espera mínima. Um id de rastreio liga as etapas do cliente à linha do
+  servidor.
+
+### Números (medidos em 17/11/2026)
+
+| Busca no regulamento, 50 perguntas de avaliação | p50 | p95 | Mesmos trechos da busca direta | Recall@5 |
+| --- | --- | --- | --- | --- |
+| Direta (mesmo processo, como a API faz) | 94 ms | 182 ms | (referência) | 88% |
+| Via MCP em stdio | 136 ms | 243 ms | 50/50 | 88% |
+| Via MCP em HTTP local (token, limite e rastreio no banco) | 180 ms | 359 ms | 50/50 | 88% |
+
+Medido nesta máquina (i3 de 4 núcleos, Postgres em Docker local), com os caminhos intercalados por
+pergunta. Detalhes em [resultados/mcp.md](resultados/mcp.md). O cliente próprio com o LLM foi rodado em 2
+perguntas, uma em stdio e uma pelo HTTP local, e respondeu as duas citando a fonte; não passou pela
+avaliação inteira. Um exemplo real no Claude Code, com as chamadas feitas e a resposta, está em
+[docs/exemplo_claude_code.md](docs/exemplo_claude_code.md).
+
+### Usar
+
+```bash
+python -m mcp_ufg                                    # servidor em stdio (lê DATABASE_URL do .env)
+python scripts/cliente_mcp.py "quantas vezes posso trancar o curso?" --stdio
+python scripts/token_mcp.py criar meu-cliente        # token para o HTTP; aparece uma vez só
+python scripts/cliente_mcp.py "quando começam as aulas de 2026/2?" --url http://127.0.0.1:8000/mcp   # MCP_TOKEN no .env
+python scripts/medir_mcp.py --url http://127.0.0.1:8000/mcp                                           # a medição acima
+```
+
+No Claude Code, o `.mcp.json` da raiz registra o servidor em stdio; abra o Claude Code com a `.venv`
+ativada, para o `python` ter as dependências.
+
+### Limitações do MCP
+
+- Sem OAuth: os tokens são emitidos à mão pelo script, sem expiração automática (só revogação).
+- O timeout de 10 s devolve a resposta ao cliente, mas não interrompe a consulta que já está no banco; ela
+  termina sozinha numa thread.
+- O limite por minuto responde 429 com `Retry-After` de 60 s, mais que os 15 s que o cliente aceita
+  esperar; nesse caso o cliente desiste em vez de segurar a pergunta.
+- A latência do HTTP foi medida com o banco local. Com o Neon, as duas consultas de token e limite e a
+  gravação do rastreio atravessam a rede a cada chamada, e o custo será maior.
+- O cliente repete o esqueleto do laço do agente (passos, resposta forçada, validação das citações), porque
+  executa ferramentas remotas descobertas em vez das locais de schema fixo; o que é igual vem do agente.
+- O SDK 2.x é recente e mudou bastante em relação à 1.x.
 
 ## Como rodar
 
@@ -184,8 +265,8 @@ docker compose up -d --wait             # Postgres 17 + pgvector em 127.0.0.1:54
 python scripts/ingerir.py               # PDFs -> trechos -> embeddings -> banco (~1 min)
 python scripts/perguntar.py "quantas vezes posso trancar e qual o prazo em 2027/1?" --agente
 docker compose --profile api up -d --build   # a API em http://127.0.0.1:8000
-pytest                                  # 73 testes sem banco
-RODAR_INTEGRACAO=1 pytest -m integracao # 5 testes com o Postgres
+pytest                                  # 111 testes sem banco (38 do MCP)
+RODAR_INTEGRACAO=1 pytest -m integracao # 8 testes com o Postgres (3 do MCP)
 ```
 
 Avaliações (gastam cota do Groq): `scripts/avaliar_busca.py`, `scripts/avaliar_respostas.py` e
@@ -253,6 +334,21 @@ are full of exact terms; "I don't know" decided by the LLM, since the top-1 simi
 questions overlapped with answerable ones; citations constrained by a JSON schema enum after the model
 cited a chunk that did not exist; rate limits counted in Postgres so they hold across cloud instances; a
 global cap of 50 questions a day, derived from Groq's limit of 200k tokens per day.
+
+## MCP server and client
+
+The same searches are also exposed over the Model Context Protocol with the official Python SDK (`mcp`
+2.3, where FastMCP is now `MCPServer`): two read-only tools (`buscar_regulamento`, `consultar_calendario`)
+with typed inputs and outputs, a `ufg://fontes` resource, stdio for local use and stateless Streamable HTTP
+at `/mcp` on the API. HTTP requires a per-client Bearer token stored only as SHA-256 and revocable;
+OAuth was not implemented (it would need a hand-written authorization server or an always-on IdP outside
+the free tier). Calls are rate-limited per client in Postgres and traced as one JSON line each (trace id,
+client, tool, latency, outcome, response size), without the question text. The client discovers the tools
+from the server, runs the LLM loop with citations and retries transient errors with real exponential
+backoff and full jitter. Measured on the 50 development questions: the MCP tool returns the same chunks
+in the same order as the direct search in 50/50 cases (recall@5 88%, unchanged); p50 latency 94 ms
+direct, 136 ms over stdio, 180 ms over local HTTP. A real Claude Code run is recorded in
+`docs/exemplo_claude_code.md`; the spec and review log are in `docs/specs/mcp.md`.
 
 ## Limitations
 

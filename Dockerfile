@@ -22,6 +22,7 @@ ENV HF_HUB_OFFLINE=1
 
 COPY rag rag
 COPY api api
+COPY mcp_ufg mcp_ufg
 RUN useradd --uid 10001 --no-create-home app
 USER app
 
