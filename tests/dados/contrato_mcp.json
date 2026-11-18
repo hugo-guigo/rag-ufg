@@ -1,0 +1,235 @@
+{
+  "ferramentas": [
+    {
+      "name": "buscar_regulamento",
+      "description": "Busca os trechos do Regulamento Geral dos Cursos de Graduação (RGCG) da UFG mais parecidos\ncom a pergunta. Cada trecho é um artigo, com rótulo para citar (artigo e página).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pergunta": {
+            "description": "A dúvida do estudante com as palavras dele, só a parte sobre regras (ex.: quantas vezes posso trancar o curso). Não resuma em uma palavra.",
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Pergunta",
+            "type": "string"
+          },
+          "k": {
+            "default": 5,
+            "description": "Quantos trechos devolver.",
+            "maximum": 10,
+            "minimum": 1,
+            "title": "K",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "pergunta"
+        ],
+        "title": "buscar_regulamentoArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "Trecho": {
+            "properties": {
+              "id": {
+                "description": "Identificador estável do trecho no índice.",
+                "title": "Id",
+                "type": "string"
+              },
+              "rotulo": {
+                "description": "Como citar: documento, artigo e página. Ex.: RGCG, Art. 82, p. 25.",
+                "title": "Rotulo",
+                "type": "string"
+              },
+              "artigos": {
+                "description": "Números dos artigos que o trecho contém.",
+                "items": {
+                  "type": "integer"
+                },
+                "title": "Artigos",
+                "type": "array"
+              },
+              "paginas": {
+                "description": "Página ou intervalo de páginas no PDF oficial.",
+                "title": "Paginas",
+                "type": "string"
+              },
+              "texto": {
+                "description": "Texto do trecho, como está no regulamento.",
+                "title": "Texto",
+                "type": "string"
+              },
+              "similaridade": {
+                "description": "Cosseno entre a pergunta e o trecho (0 a 1; maior é mais parecido).",
+                "title": "Similaridade",
+                "type": "number"
+              }
+            },
+            "required": [
+              "id",
+              "rotulo",
+              "artigos",
+              "paginas",
+              "texto",
+              "similaridade"
+            ],
+            "title": "Trecho",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "pergunta": {
+            "title": "Pergunta",
+            "type": "string"
+          },
+          "trechos": {
+            "description": "Do mais parecido para o menos parecido.",
+            "items": {
+              "$ref": "#/$defs/Trecho"
+            },
+            "title": "Trechos",
+            "type": "array"
+          }
+        },
+        "required": [
+          "pergunta",
+          "trechos"
+        ],
+        "title": "ResultadoRegulamento",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "consultar_calendario",
+      "description": "Busca eventos do Calendário Acadêmico 2026 da UFG (datas e prazos de dez/2025 a abr/2027).\nDevolve até 8 eventos em ordem de data, cada um com rótulo para citar.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "termo": {
+            "default": "",
+            "description": "Termo curto com o evento procurado (ex.: início das aulas 2026/2, trancamento de matrícula 2027/1). Semestres aparecem como 2026/1 e 2026/2; disciplina aparece como componente curricular. Pode ficar vazio se o intervalo de datas for informado.",
+            "maxLength": 200,
+            "title": "Termo",
+            "type": "string"
+          },
+          "data_inicio": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Início do intervalo (AAAA-MM-DD), opcional.",
+            "title": "Data Inicio"
+          },
+          "data_fim": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Fim do intervalo (AAAA-MM-DD), opcional.",
+            "title": "Data Fim"
+          }
+        },
+        "title": "consultar_calendarioArguments"
+      },
+      "outputSchema": {
+        "$defs": {
+          "EventoCalendario": {
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "integer"
+              },
+              "rotulo": {
+                "description": "Como citar: calendário, datas e página.",
+                "title": "Rotulo",
+                "type": "string"
+              },
+              "data_inicio": {
+                "format": "date",
+                "title": "Data Inicio",
+                "type": "string"
+              },
+              "data_fim": {
+                "format": "date",
+                "title": "Data Fim",
+                "type": "string"
+              },
+              "descricao": {
+                "title": "Descricao",
+                "type": "string"
+              },
+              "pagina": {
+                "title": "Pagina",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "id",
+              "rotulo",
+              "data_inicio",
+              "data_fim",
+              "descricao",
+              "pagina"
+            ],
+            "title": "EventoCalendario",
+            "type": "object"
+          }
+        },
+        "properties": {
+          "termo": {
+            "description": "O termo usado na busca, depois da normalização de semestre (ex.: 2026/2).",
+            "title": "Termo",
+            "type": "string"
+          },
+          "eventos": {
+            "description": "Em ordem de data.",
+            "items": {
+              "$ref": "#/$defs/EventoCalendario"
+            },
+            "title": "Eventos",
+            "type": "array"
+          }
+        },
+        "required": [
+          "termo",
+          "eventos"
+        ],
+        "title": "ResultadoCalendario",
+        "type": "object"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    }
+  ],
+  "recursos": [
+    {
+      "name": "fontes",
+      "title": "Documentos indexados",
+      "uri": "ufg://fontes",
+      "description": "Os documentos oficiais que as ferramentas consultam, com URL, SHA-256 e quantos trechos e eventos cada um tem no índice.",
+      "mimeType": "application/json"
+    }
+  ]
+}

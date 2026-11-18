@@ -1,5 +1,6 @@
 # O que a API precisa em execução (imagem Docker). A ingestão (pypdf) fica em requirements.txt.
 fastapi==0.142.1
+mcp==2.3.0
 httpx==0.28.1
 huggingface_hub==1.33.0
 numpy==2.5.3

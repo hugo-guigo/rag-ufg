@@ -5,28 +5,10 @@ Separado de app.py para os testes da API trocarem tudo isto por versões falsas.
 import os
 from dataclasses import dataclass, field
 
-from rag.agente import Agente
-from rag.busca import buscar, buscar_eventos
+from rag.agente import Agente, FontesPool
 from rag.registro import Limites, Registro
 
 MAX_ESPERA_GROQ = 8.0  # segundos somados de espera pelo limite por minuto antes de devolver 503
-
-
-class FontesPool:
-    """As ferramentas do agente com uma conexão do pool por consulta (a API atende em várias threads)."""
-
-    def __init__(self, pool, embedder, k: int = 5, n_eventos: int = 8):
-        self.pool, self.embedder, self.k, self.n_eventos = pool, embedder, k, n_eventos
-
-    def buscar_regulamento(self, consulta):
-        vetor = self.embedder.pergunta(consulta)
-        with self.pool.connection() as conexao:
-            return buscar(conexao, vetor, self.k, "artigo_secao", self.embedder.nome)
-
-    def consultar_calendario(self, termo, inicio, fim):
-        vetor = self.embedder.pergunta(termo) if termo.strip() else None
-        with self.pool.connection() as conexao:
-            return buscar_eventos(conexao, vetor, termo, inicio, fim, self.n_eventos)
 
 
 @dataclass

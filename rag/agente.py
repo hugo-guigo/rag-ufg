@@ -94,6 +94,25 @@ class FontesBanco:
         return buscar_eventos(self.conexao, vetor, termo, inicio, fim, self.n_eventos)
 
 
+class FontesPool:
+    """As ferramentas do agente com uma conexão do pool por consulta (a API atende em várias threads)."""
+
+    def __init__(self, pool, embedder, k: int = 5, n_eventos: int = 8):
+        self.pool, self.embedder, self.k, self.n_eventos = pool, embedder, k, n_eventos
+
+    def buscar_regulamento(self, consulta, k: int | None = None):
+        from rag.busca import buscar
+        vetor = self.embedder.pergunta(consulta)
+        with self.pool.connection() as conexao:
+            return buscar(conexao, vetor, k or self.k, "artigo_secao", self.embedder.nome)
+
+    def consultar_calendario(self, termo, inicio, fim):
+        from rag.busca import buscar_eventos
+        vetor = self.embedder.pergunta(termo) if termo.strip() else None
+        with self.pool.connection() as conexao:
+            return buscar_eventos(conexao, vetor, termo, inicio, fim, self.n_eventos)
+
+
 def rotulo_evento(e: Evento) -> str:
     datas = e.data_inicio.strftime("%d/%m/%Y")
     if e.data_fim != e.data_inicio:
@@ -122,6 +141,18 @@ def normalizar_semestre(termo: str, inicio: date | None, fim: date | None) -> st
 
 class ErroFerramenta(Exception):
     """Erro que volta para o modelo como resultado da ferramenta."""
+
+
+def validar_calendario(termo: str, inicio: date | None, fim: date | None) -> str:
+    """Confere os argumentos da consulta ao calendário e devolve o termo normalizado.
+
+    Usada pelo agente e pela ferramenta MCP, para as duas aceitarem e recusarem as mesmas coisas.
+    """
+    if inicio and fim and fim < inicio:
+        raise ErroFerramenta("data_fim é anterior a data_inicio")
+    if not termo.strip() and not (inicio and fim):
+        raise ErroFerramenta("informe um termo ou as duas datas do intervalo")
+    return normalizar_semestre(termo, inicio, fim)
 
 
 def _data(texto: str | None, campo: str) -> date | None:
@@ -253,14 +284,9 @@ class Agente:
             texto = "\n\n".join(f"{rot} ({rotulo(r)})\n{r.texto}" for rot, r in zip(rotulos, resultados))
             return texto or "Nenhum trecho encontrado.", rotulos
         if nome == "consultar_calendario":
-            termo = str(argumentos.get("termo") or "")
             inicio = _data(argumentos.get("data_inicio"), "data_inicio")
             fim = _data(argumentos.get("data_fim"), "data_fim")
-            if inicio and fim and fim < inicio:
-                raise ErroFerramenta("data_fim é anterior a data_inicio")
-            if not termo.strip() and not (inicio and fim):
-                raise ErroFerramenta("informe um termo ou as duas datas do intervalo")
-            termo = normalizar_semestre(termo, inicio, fim)
+            termo = validar_calendario(str(argumentos.get("termo") or ""), inicio, fim)
             resultados = self.fontes.consultar_calendario(termo, inicio, fim)
             rotulos = [_rotular(eventos, e, "E") for e in resultados]
             texto = "\n".join(f"{rot} ({rotulo_evento(e)}): {e.descricao}" for rot, e in zip(rotulos, resultados))
