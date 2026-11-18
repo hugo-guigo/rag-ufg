@@ -125,4 +125,6 @@ motores para o mesmo roteiro; API com e sem `thread_id`. Os 119 testes de hoje c
 
 ## Registro da revisão
 
-(preenchido durante o trabalho)
+- 18/11/2026, revisão do Hugo: especificação aprovada. As conversas de teste serão esboçadas pelo Claude e
+  revisadas pelo Hugo, e o arquivo vai dizer isso. Os cerca de 3 dias de cota do Groq, com a demo podendo
+  responder 503 depois de cada lote, estão aceitos. Projeto pausado antes do bloco 1, por decisão do Hugo.
