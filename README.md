@@ -221,8 +221,14 @@ flowchart LR
 | Via MCP em HTTP local (token, limite e rastreio no banco) | 180 ms | 359 ms | 50/50 | 88% |
 
 Medido nesta máquina (i3 de 4 núcleos, Postgres em Docker local), com os caminhos intercalados por
-pergunta. Detalhes em [resultados/mcp.md](resultados/mcp.md). O cliente próprio com o LLM foi rodado em 2
-perguntas, uma em stdio e uma pelo HTTP local, e respondeu as duas citando a fonte; não passou pela
+pergunta. Detalhes em [resultados/mcp.md](resultados/mcp.md).
+
+**No Azure** (17/11/2026, de Goiânia, app já acordado): 6 chamadas de `buscar_regulamento` pelo `/mcp`
+público levaram de 259 a 403 ms (mediana de 262 ms) vistas do cliente; dentro do servidor, a ferramenta
+levou de 29 a 74 ms. A diferença é a rede até a região North Central US e a conferência de token e limite
+no Neon a cada chamada. Seis chamadas dão uma ideia da ordem de grandeza, não uma medição. O cliente próprio com o LLM foi rodado em 3
+perguntas, uma em stdio, uma pelo HTTP local e uma pelo `/mcp` no Azure, e respondeu as três citando a
+fonte; não passou pela
 avaliação inteira. Um exemplo real no Claude Code, com as chamadas feitas e a resposta, está em
 [docs/exemplo_claude_code.md](docs/exemplo_claude_code.md).
 
@@ -237,7 +243,17 @@ python scripts/medir_mcp.py --url http://127.0.0.1:8000/mcp                     
 ```
 
 No Claude Code, o `.mcp.json` da raiz registra o servidor em stdio; abra o Claude Code com a `.venv`
-ativada, para o `python` ter as dependências.
+ativada, para o `python` ter as dependências. O servidor remoto está em
+`https://ca-rag-ufg.kindpond-1fdbf9ec.northcentralus.azurecontainerapps.io/mcp` e exige token (emitido
+por mim com `scripts/token_mcp.py`; sem ele a resposta é 401). Com um token:
+
+```bash
+claude mcp add --transport http assistente-ufg-remoto \
+  https://ca-rag-ufg.kindpond-1fdbf9ec.northcentralus.azurecontainerapps.io/mcp \
+  --header "Authorization: Bearer $MCP_TOKEN"
+```
+
+O Claude Code guarda esse header na configuração local dele, em texto: trate o arquivo como segredo.
 
 ### Limitações do MCP
 
@@ -246,8 +262,9 @@ ativada, para o `python` ter as dependências.
   termina sozinha numa thread.
 - O limite por minuto responde 429 com `Retry-After` de 60 s, mais que os 15 s que o cliente aceita
   esperar; nesse caso o cliente desiste em vez de segurar a pergunta.
-- A latência do HTTP foi medida com o banco local. Com o Neon, as duas consultas de token e limite e a
-  gravação do rastreio atravessam a rede a cada chamada, e o custo será maior.
+- A latência do HTTP nas 50 perguntas foi medida com o banco local. No Azure, com o Neon, as consultas de
+  token e limite e a gravação do rastreio atravessam a rede a cada chamada; lá só houve 6 chamadas de
+  verificação, sem medição completa.
 - O cliente repete o esqueleto do laço do agente (passos, resposta forçada, validação das citações), porque
   executa ferramentas remotas descobertas em vez das locais de schema fixo; o que é igual vem do agente.
 - O SDK 2.x é recente e mudou bastante em relação à 1.x.
@@ -347,7 +364,8 @@ client, tool, latency, outcome, response size), without the question text. The c
 from the server, runs the LLM loop with citations and retries transient errors with real exponential
 backoff and full jitter. Measured on the 50 development questions: the MCP tool returns the same chunks
 in the same order as the direct search in 50/50 cases (recall@5 88%, unchanged); p50 latency 94 ms
-direct, 136 ms over stdio, 180 ms over local HTTP. A real Claude Code run is recorded in
+direct, 136 ms over stdio, 180 ms over local HTTP. Deployed at `/mcp` on the demo (token required). A
+real Claude Code run is recorded in
 `docs/exemplo_claude_code.md`; the spec and review log are in `docs/specs/mcp.md`.
 
 ## Limitations
