@@ -165,3 +165,58 @@ def test_pagina_inicial_e_servida_pela_propria_api():
         r = http.get("/")
     assert r.status_code == 200 and r.headers["content-type"].startswith("text/html")
     assert 'fetch("perguntar"' in r.text  # caminho relativo: mesma origem, sem CORS
+
+
+# ---- conversa (thread_id) e escolha do motor
+
+THREAD = "0b6f3f5e-8a52-4c1e-9d33-2f1f0c7a1b2c"
+
+
+class AgenteComConversa(AgenteFalso):
+    conversa = True
+
+    def __init__(self):
+        super().__init__()
+        self.threads = []
+
+    def perguntar(self, pergunta, thread_id=None):
+        self.threads.append(thread_id)
+        return super().perguntar(pergunta)
+
+
+def test_thread_id_com_motor_manual_e_400_sem_chamar_o_agente_nem_gravar():
+    http, servicos = cliente_http()
+    with http:
+        r = http.post("/perguntar", json={"pergunta": "e no segundo semestre?", "thread_id": THREAD})
+    assert r.status_code == 400 and "langgraph" in r.json()["detail"]
+    assert servicos.agente.perguntas == [] and servicos.registro.linhas == []
+
+
+def test_thread_id_com_motor_de_conversa_passa_adiante_e_volta_na_resposta():
+    http, servicos = cliente_http(agente=AgenteComConversa())
+    with http:
+        com = http.post("/perguntar", json={"pergunta": "e no segundo semestre?", "thread_id": THREAD})
+        sem = http.post("/perguntar", json={"pergunta": "quando começa 2026/2?"})
+    assert com.status_code == 200 and com.json()["thread_id"] == THREAD
+    assert sem.status_code == 200 and sem.json()["thread_id"] is None
+    assert servicos.agente.threads == [THREAD, None]
+    assert len(servicos.registro.linhas) == 2  # cada turno conta no limite como uma pergunta
+
+
+def test_thread_id_que_nao_e_uuid_e_422():
+    http, servicos = cliente_http(agente=AgenteComConversa())
+    with http:
+        assert http.post("/perguntar", json={"pergunta": "oi tudo bem", "thread_id": "../x"}).status_code == 422
+    assert servicos.agente.perguntas == []
+
+
+def test_motor_vem_de_agente_motor():
+    from api.servicos import criar_agente
+    from rag.agente import Agente
+    from rag.agente_grafo import AgenteGrafo
+
+    assert type(criar_agente("manual", None, None)) is Agente
+    grafo = criar_agente("langgraph", None, None)
+    assert isinstance(grafo, AgenteGrafo) and grafo.conversa
+    with pytest.raises(ValueError, match="AGENTE_MOTOR"):
+        criar_agente("LangGraph ", None, None)

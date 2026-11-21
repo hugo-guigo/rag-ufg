@@ -9,6 +9,7 @@ import logging
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
+from uuid import UUID
 
 from fastapi import FastAPI, Request
 from fastapi.responses import FileResponse, JSONResponse
@@ -29,6 +30,9 @@ PAGINA = Path(__file__).parent / "estatico" / "index.html"
 
 class Pergunta(BaseModel):
     pergunta: str = Field(min_length=3, max_length=500, examples=["Quantas vezes posso trancar o curso?"])
+    thread_id: UUID | None = Field(
+        None, description="Conversa: o cliente gera um UUID e manda o mesmo em cada turno. "
+                          "Exige o motor langgraph; sem ele, cada pergunta é avulsa.")
 
     @field_validator("pergunta")
     @classmethod
@@ -58,6 +62,7 @@ class Resposta(BaseModel):
     fontes: list[Fonte]
     ferramentas: list[Ferramenta]
     latencia_ms: int
+    thread_id: str | None = None
 
 
 def ip_do_cliente(request: Request, confiar_proxy: bool) -> str:
@@ -135,9 +140,16 @@ def criar_app(montar_servicos, limites_mcp=None) -> FastAPI:
         return JSONResponse({"status": "erro", "banco": "fora do ar"}, status_code=503)
 
     @app.post("/perguntar", response_model=Resposta,
-              responses={429: {"description": "Limite de perguntas"}, 503: {"description": "Groq ou banco indisponível"}})
+              responses={400: {"description": "thread_id com o motor manual"},
+                         429: {"description": "Limite de perguntas"},
+                         503: {"description": "Groq ou banco indisponível"}})
     def perguntar(corpo: Pergunta, request: Request):
         servicos: Servicos = request.app.state.servicos
+        if corpo.thread_id and not getattr(servicos.agente, "conversa", False):
+            # Recusar é melhor que ignorar: o cliente acharia que há memória e não há.
+            return JSONResponse({"detail": "A conversa (thread_id) exige o motor langgraph (AGENTE_MOTOR=langgraph)."},
+                                status_code=400)
+        thread_id = str(corpo.thread_id) if corpo.thread_id else None
         inicio = time.perf_counter()
         linha = {"cliente": hash_cliente(ip_do_cliente(request, servicos.confiar_proxy), servicos.sal),
                  "pergunta": corpo.pergunta}
@@ -166,7 +178,8 @@ def criar_app(montar_servicos, limites_mcp=None) -> FastAPI:
                           {"Retry-After": str(segundos)})
 
         try:
-            r = servicos.agente.perguntar(corpo.pergunta)
+            r = (servicos.agente.perguntar(corpo.pergunta, thread_id=thread_id) if thread_id
+                 else servicos.agente.perguntar(corpo.pergunta))
         except ErroOcupado as erro:
             linha["erro"] = str(erro)
             return fechar(503, {"detail": "O assistente está no limite de uso do plano gratuito do modelo. "
@@ -190,7 +203,7 @@ def criar_app(montar_servicos, limites_mcp=None) -> FastAPI:
             fontes=[Fonte(rotulo=rot, fonte=fonte, texto=texto) for rot, fonte, texto in r.citados],
             ferramentas=[Ferramenta(nome=p.ferramenta, argumentos=p.argumentos, erro=p.erro)
                          for p in r.passos if p.ferramenta != "responder"],
-            latencia_ms=0)
+            latencia_ms=0, thread_id=thread_id)
         return fechar(200, resposta.model_dump())
 
     return app

@@ -25,7 +25,7 @@ nenhuma versão fixada hoje.
 ## O grafo
 
 ```text
-START -> modelo --(pediu ferramentas)--> ferramentas --(resposta válida ou limite)--> END
+START -> modelo --(pediu ferramentas)--> ferramentas --(resposta válida ou limite)--> memoria -> END
            ^  |                              |
            |  +--(texto, sem ferramenta)--+  |
            +------------------------------+--+  (volta enquanto houver passos)
@@ -152,3 +152,30 @@ motores para o mesmo roteiro; API com e sem `thread_id`. Os 119 testes de hoje c
     grafo não mandar o lembrete ou forçar a resposta um passo tarde.
   - Testes: 12 novos; 131 no total (123 passam, 8 de integração pulados sem o Postgres local; o CI roda
     os 8).
+- 21/11/2026, revisão do Hugo no bloco 1: aprovado. Revisão de código automática (subagente do
+  pr-review-toolkit) no commit do bloco 1: nenhum bug no bloco 1; dois avisos para o bloco 2 (tipos do
+  estado no serializador do checkpointer e mensagens de turnos anteriores com rótulos antigos), os dois
+  tratados abaixo; e um caso que só divergia em teoria (argumentos de ferramenta que não são texto),
+  corrigido.
+- 21/11/2026: bloco 2 feito (memória e API). Como ficou:
+  - **Histórico fora de `messages`.** A entrada de cada turno apaga as mensagens do turno anterior
+    (`RemoveMessage(REMOVE_ALL_MESSAGES)`); um campo `historico` guarda só pergunta e resposta final, até 3
+    turnos, preenchido por um nó `memoria` no fim do grafo. Assim o checkpoint não acumula as saídas das
+    ferramentas e o modelo nunca vê um rótulo T1 de outro turno. Um turno sem resposta válida entra com o
+    "Não consegui concluir" que o estudante viu.
+  - **Pergunta avulsa sem checkpoint.** O grafo é compilado duas vezes: sem checkpointer (pergunta avulsa,
+    igual ao motor manual) e com checkpointer (conversa). Uma pergunta sem `thread_id` não grava nada.
+  - **Serializador com lista fechada.** O checkpointer só reconstrói `Passo`, `Contagem`, `Resultado` e
+    `Evento` (o padrão da biblioteca aceita qualquer classe, com aviso). Uma tupla volta como lista, sem
+    efeito: só o histórico, de textos, passa de um turno para o outro.
+  - **`recursion_limit`** continua `2 * max_passos + 2`: o nó `memoria` usa a folga (9 de 10 no pior caso).
+  - **API:** quem cria a conversa é o cliente, gerando um UUID e mandando o mesmo `thread_id` em cada turno
+    (o campo é validado como UUID: outro formato dá 422). A resposta devolve o `thread_id`. Com o motor
+    `manual`, 400 antes de contar no limite e sem gravar no log. `AGENTE_MOTOR=manual|langgraph` em
+    `api/servicos.py` (valor inválido derruba a subida). Até o bloco 4 a memória fica no processo
+    (`InMemorySaver`) e some quando o app vai a zero réplicas; a demo continua no motor `manual`.
+  - Limitação conhecida: dois turnos simultâneos na mesma conversa não são serializados (o segundo pode
+    não ver o primeiro). Para um estudante digitando, não acontece; fica registrado.
+  - Testes: 12 novos (8 do grafo, 4 da API); 143 no total (135 passam, 8 de integração pulados sem o
+    Postgres local). Conferido que falham se a entrada não apagar as mensagens antigas, se o histórico
+    não tiver limite ou se o checkpointer usar o serializador padrão.
