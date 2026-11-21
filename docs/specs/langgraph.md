@@ -25,12 +25,14 @@ nenhuma versão fixada hoje.
 ## O grafo
 
 ```text
-START -> modelo --(chamou responder)--------> END
-           |  ^
-           |  +--(sem ferramenta: pede para usar)--+
-           |                                       |
-           +--(pediu ferramentas)--> ferramentas --+
+START -> modelo --(pediu ferramentas)--> ferramentas --(resposta válida ou limite)--> END
+           ^  |                              |
+           |  +--(texto, sem ferramenta)--+  |
+           +------------------------------+--+  (volta enquanto houver passos)
 ```
+
+(Desenho ajustado no bloco 1: a `responder` é executada no nó `ferramentas`, como no motor manual; ver o
+registro da revisão.)
 
 - **Estado** (`TypedDict`): `messages` com o redutor `add_messages` (cada nó devolve só as mensagens
   novas, o redutor junta); `passos` (chamadas ao LLM neste turno); `rotulados` (T1, E1... deste turno);
@@ -128,3 +130,25 @@ motores para o mesmo roteiro; API com e sem `thread_id`. Os 119 testes de hoje c
 - 18/11/2026, revisão do Hugo: especificação aprovada. As conversas de teste serão esboçadas pelo Claude e
   revisadas pelo Hugo, e o arquivo vai dizer isso. Os cerca de 3 dias de cota do Groq, com a demo podendo
   responder 503 depois de cada lote, estão aceitos. Projeto pausado antes do bloco 1, por decisão do Hugo.
+- 21/11/2026: projeto retomado pelo Hugo. Bloco 1 feito (função comum e grafo, com testes do LLM falso).
+  Mudanças em relação à especificação, encontradas na implementação:
+  - **`convert_to_openai_messages` recusado.** Conferido na versão instalada: ele descarta a chamada de
+    ferramenta cujos argumentos não são JSON válido, mas mantém a `ToolMessage` dela; a API do Groq
+    recusa uma resposta de ferramenta sem a chamada correspondente. O motor manual manda essas chamadas
+    como vieram (e o modelo recebe "ERRO: argumentos não são JSON válido"). Agora as chamadas originais
+    ficam em `additional_kwargs` da `AIMessage` e um conversor de 15 linhas (`para_api`) monta o formato
+    da API; `tool_calls` e `invalid_tool_calls` continuam preenchidos para quem usa o langchain-core.
+    `convert_to_messages` também não serve: levanta `JSONDecodeError` com argumentos inválidos.
+  - **A `responder` é executada no nó `ferramentas`, não decidida na aresta depois do `modelo`.** No
+    motor manual, a `responder` é processada junto com as outras chamadas da mesma rodada, e uma
+    `responder` inválida volta para o modelo como erro. Fazer isso no mesmo nó mantém uma regra só.
+  - **`recursion_limit = 2 * max_passos + 2`** (10 com o padrão), em vez de 10 fixo, para os testes com
+    `max_passos` menor continuarem com a mesma folga.
+  - Função comum: `executar_chamada`, `validar_final` e `concluir` saíram de dentro do `Agente` para o
+    módulo; o laço manual e o grafo usam as mesmas. O cliente MCP passou a importar `validar_final`.
+  - Teste de equivalência: para 6 roteiros (com ferramentas, mesmo trecho em duas buscas, argumentos
+    inválidos, limite de passos, sem resposta válida, resposta em texto), os dois motores dão o mesmo
+    `RespostaAgente` (sem os tempos) e mandam os mesmos pedidos ao LLM. Conferido que ele falha se o
+    grafo não mandar o lembrete ou forçar a resposta um passo tarde.
+  - Testes: 12 novos; 131 no total (123 passam, 8 de integração pulados sem o Postgres local; o CI roda
+    os 8).

@@ -200,7 +200,133 @@ class RespostaAgente:
         return [f"{r}: {fonte}" for r, fonte, _ in self.citados]
 
 
+LEMBRETE = "Use as ferramentas e termine chamando responder."
+SEM_RESPOSTA = {"cobertura": "nenhuma", "citacoes": [],
+                "resposta": "Não consegui concluir a consulta às fontes. Tente reformular a pergunta."}
+
+
+@dataclass
+class Contagem:
+    """O que se soma a cada chamada ao LLM, para o RespostaAgente."""
+    chamadas: int = 0
+    ms_llm: float = 0.0
+    ms_llm_total: float = 0.0
+    tokens_entrada: int = 0
+    tokens_saida: int = 0
+
+    def somar(self, r) -> None:
+        self.chamadas += 1
+        self.ms_llm += r.ms
+        self.ms_llm_total += r.ms_total
+        self.tokens_entrada += r.tokens_entrada
+        self.tokens_saida += r.tokens_saida
+
+
+# ---- partes comuns aos dois motores (o laço daqui e o grafo de rag/agente_grafo.py)
+# Os dois chamam as mesmas funções para executar ferramentas, validar a resposta e montar o resultado,
+# então a comparação entre eles mede só o motor, não uma regra diferente.
+
+def executar_chamada(chamada: dict, fontes: Fontes, trechos: dict[str, Resultado],
+                     eventos: dict[str, Evento]) -> tuple[str, Passo, dict | None]:
+    """Executa uma chamada de ferramenta pedida pelo modelo (formato da API: id e function).
+
+    Devolve o texto que volta para o modelo, o registro do passo e, se a chamada foi um `responder`
+    válido, a resposta final. Erros viram texto "ERRO: ..." para o modelo, nunca exceção.
+    """
+    nome = chamada["function"]["name"]
+    t0 = time.perf_counter()
+    argumentos: dict = {}
+    rotulos: list[str] = []
+    final = None
+    erro = None
+    conteudo = ""
+    try:
+        argumentos = json.loads(chamada["function"].get("arguments") or "{}")
+        if not isinstance(argumentos, dict):
+            raise ErroFerramenta("os argumentos devem ser um objeto JSON")
+        if nome == "responder":
+            final = validar_final(argumentos)
+            conteudo = "ok"
+        else:
+            conteudo, rotulos = _executar(fontes, nome, argumentos, trechos, eventos)
+    except json.JSONDecodeError:
+        erro = "argumentos não são JSON válido"
+    except ErroFerramenta as e:
+        erro = str(e)
+    except Exception as e:  # banco fora do ar, bug: o modelo fica sabendo e o agente segue
+        erro = f"falha interna ({type(e).__name__})"
+    if erro:
+        conteudo = f"ERRO: {erro}"
+    return conteudo, Passo(nome, argumentos, rotulos, 1000 * (time.perf_counter() - t0), erro), final
+
+
+def concluir(pergunta: str, final: dict | None, passos: list[Passo], contagem: Contagem, forcou: bool,
+             modelo: str, trechos: dict[str, Resultado], eventos: dict[str, Evento]) -> RespostaAgente:
+    """Monta o RespostaAgente. Sem resposta válida nem no último passo, devolve o "não consegui"."""
+    final = final or SEM_RESPOSTA
+    citados, invalidas = _citados(final["citacoes"], trechos, eventos)
+    if final["cobertura"] == "nenhuma":
+        citados = []
+    return RespostaAgente(
+        pergunta, final["cobertura"], final["resposta"].strip(), citados, passos, contagem.chamadas, forcou,
+        invalidas, sum(p.erro is not None for p in passos), contagem.ms_llm, contagem.ms_llm_total,
+        sum(p.ms for p in passos), contagem.tokens_entrada, contagem.tokens_saida, modelo, trechos, eventos)
+
+
+def validar_final(argumentos: dict) -> dict:
+    cobertura = argumentos.get("cobertura")
+    resposta = argumentos.get("resposta")
+    citacoes = argumentos.get("citacoes", [])
+    if cobertura not in COBERTURAS:
+        raise ErroFerramenta(f"cobertura deve ser uma de {', '.join(COBERTURAS)}")
+    if not isinstance(resposta, str) or not resposta.strip():
+        raise ErroFerramenta("resposta vazia")
+    if not isinstance(citacoes, list) or not all(isinstance(c, str) for c in citacoes):
+        raise ErroFerramenta("citacoes deve ser uma lista de rótulos")
+    return {"cobertura": cobertura, "resposta": resposta, "citacoes": citacoes}
+
+
+def _executar(fontes: Fontes, nome: str, argumentos: dict, trechos: dict[str, Resultado],
+              eventos: dict[str, Evento]) -> tuple[str, list[str]]:
+    if nome == "buscar_regulamento":
+        consulta = str(argumentos.get("consulta", "")).strip()
+        if not consulta:
+            raise ErroFerramenta("consulta vazia")
+        resultados = fontes.buscar_regulamento(consulta)
+        rotulos = [_rotular(trechos, r, "T") for r in resultados]
+        texto = "\n\n".join(f"{rot} ({rotulo(r)})\n{r.texto}" for rot, r in zip(rotulos, resultados))
+        return texto or "Nenhum trecho encontrado.", rotulos
+    if nome == "consultar_calendario":
+        inicio = _data(argumentos.get("data_inicio"), "data_inicio")
+        fim = _data(argumentos.get("data_fim"), "data_fim")
+        termo = validar_calendario(str(argumentos.get("termo") or ""), inicio, fim)
+        resultados = fontes.consultar_calendario(termo, inicio, fim)
+        rotulos = [_rotular(eventos, e, "E") for e in resultados]
+        texto = "\n".join(f"{rot} ({rotulo_evento(e)}): {e.descricao}" for rot, e in zip(rotulos, resultados))
+        return texto or "Nenhum evento encontrado com esse termo e intervalo.", rotulos
+    raise ErroFerramenta(f"ferramenta desconhecida: {nome}")
+
+
+def _citados(rotulos: list[str], trechos: dict[str, Resultado],
+             eventos: dict[str, Evento]) -> tuple[list[tuple[str, str, str]], int]:
+    citados, invalidas, vistos = [], 0, set()
+    for rot in rotulos:
+        rot = rot.strip().upper()
+        if rot in vistos:
+            continue
+        vistos.add(rot)
+        if rot in trechos:
+            citados.append((rot, rotulo(trechos[rot]), trechos[rot].texto))
+        elif rot in eventos:
+            citados.append((rot, rotulo_evento(eventos[rot]), eventos[rot].descricao))
+        else:
+            invalidas += 1
+    return citados, invalidas
+
+
 class Agente:
+    """O motor manual: um laço de até max_passos chamadas ao LLM."""
+
     def __init__(self, fontes: Fontes, cliente: ClienteGroq, modelo: str = MODELO_RESPOSTA,
                  max_passos: int = MAX_PASSOS, hoje: date | None = None):
         self.fontes, self.cliente, self.modelo, self.max_passos = fontes, cliente, modelo, max_passos
@@ -212,8 +338,7 @@ class Agente:
         passos: list[Passo] = []
         mensagens = [{"role": "system", "content": SISTEMA.format(hoje=self.hoje.isoformat())},
                      {"role": "user", "content": pergunta}]
-        ms_llm = ms_llm_total = 0.0
-        tokens_entrada = tokens_saida = chamadas = 0
+        contagem = Contagem()
         final: dict | None = None
         forcou = False
 
@@ -222,106 +347,23 @@ class Agente:
             forcou = ultimo
             r = self.cliente.ferramentas(self.modelo, mensagens, FERRAMENTAS,
                                          FORCAR_RESPOSTA if ultimo else "required", max_tokens=800)
-            chamadas += 1
-            ms_llm += r.ms
-            ms_llm_total += r.ms_total
-            tokens_entrada += r.tokens_entrada
-            tokens_saida += r.tokens_saida
+            contagem.somar(r)
             chamadas_ferramenta = r.conteudo.get("tool_calls") or []
             if not chamadas_ferramenta:  # o modelo respondeu em texto, sem ferramenta
                 mensagens.append({"role": "assistant", "content": r.conteudo.get("content") or ""})
-                mensagens.append({"role": "user", "content": "Use as ferramentas e termine chamando responder."})
+                mensagens.append({"role": "user", "content": LEMBRETE})
                 continue
             mensagens.append({"role": "assistant", "content": r.conteudo.get("content") or "",
                               "tool_calls": chamadas_ferramenta})
             for chamada in chamadas_ferramenta:
-                nome = chamada["function"]["name"]
-                t0 = time.perf_counter()
-                argumentos: dict = {}
-                rotulos: list[str] = []
-                erro = None
-                try:
-                    argumentos = json.loads(chamada["function"].get("arguments") or "{}")
-                    if not isinstance(argumentos, dict):
-                        raise ErroFerramenta("os argumentos devem ser um objeto JSON")
-                    if nome == "responder":
-                        final = self._validar_final(argumentos)
-                        conteudo = "ok"
-                    else:
-                        conteudo, rotulos = self._executar(nome, argumentos, trechos, eventos)
-                except json.JSONDecodeError:
-                    erro = "argumentos não são JSON válido"
-                except ErroFerramenta as e:
-                    erro = str(e)
-                except Exception as e:  # banco fora do ar, bug: o modelo fica sabendo e o agente segue
-                    erro = f"falha interna ({type(e).__name__})"
-                if erro:
-                    conteudo = f"ERRO: {erro}"
-                passos.append(Passo(nome, argumentos, rotulos, 1000 * (time.perf_counter() - t0), erro))
+                conteudo, registro, resposta = executar_chamada(chamada, self.fontes, trechos, eventos)
+                passos.append(registro)
+                final = resposta or final
                 mensagens.append({"role": "tool", "tool_call_id": chamada["id"], "content": conteudo})
             if final is not None:
                 break
 
-        if final is None:  # nem com a escolha forçada veio uma resposta válida
-            final = {"cobertura": "nenhuma", "citacoes": [],
-                     "resposta": "Não consegui concluir a consulta às fontes. Tente reformular a pergunta."}
-        citados, invalidas = self._citados(final["citacoes"], trechos, eventos)
-        if final["cobertura"] == "nenhuma":
-            citados = []
-        return RespostaAgente(
-            pergunta, final["cobertura"], final["resposta"].strip(), citados, passos, chamadas, forcou, invalidas,
-            sum(p.erro is not None for p in passos), ms_llm, ms_llm_total,
-            sum(p.ms for p in passos), tokens_entrada, tokens_saida, self.modelo, trechos, eventos)
-
-    def _executar(self, nome: str, argumentos: dict, trechos: dict[str, Resultado],
-                  eventos: dict[str, Evento]) -> tuple[str, list[str]]:
-        if nome == "buscar_regulamento":
-            consulta = str(argumentos.get("consulta", "")).strip()
-            if not consulta:
-                raise ErroFerramenta("consulta vazia")
-            resultados = self.fontes.buscar_regulamento(consulta)
-            rotulos = [_rotular(trechos, r, "T") for r in resultados]
-            texto = "\n\n".join(f"{rot} ({rotulo(r)})\n{r.texto}" for rot, r in zip(rotulos, resultados))
-            return texto or "Nenhum trecho encontrado.", rotulos
-        if nome == "consultar_calendario":
-            inicio = _data(argumentos.get("data_inicio"), "data_inicio")
-            fim = _data(argumentos.get("data_fim"), "data_fim")
-            termo = validar_calendario(str(argumentos.get("termo") or ""), inicio, fim)
-            resultados = self.fontes.consultar_calendario(termo, inicio, fim)
-            rotulos = [_rotular(eventos, e, "E") for e in resultados]
-            texto = "\n".join(f"{rot} ({rotulo_evento(e)}): {e.descricao}" for rot, e in zip(rotulos, resultados))
-            return texto or "Nenhum evento encontrado com esse termo e intervalo.", rotulos
-        raise ErroFerramenta(f"ferramenta desconhecida: {nome}")
-
-    @staticmethod
-    def _validar_final(argumentos: dict) -> dict:
-        cobertura = argumentos.get("cobertura")
-        resposta = argumentos.get("resposta")
-        citacoes = argumentos.get("citacoes", [])
-        if cobertura not in COBERTURAS:
-            raise ErroFerramenta(f"cobertura deve ser uma de {', '.join(COBERTURAS)}")
-        if not isinstance(resposta, str) or not resposta.strip():
-            raise ErroFerramenta("resposta vazia")
-        if not isinstance(citacoes, list) or not all(isinstance(c, str) for c in citacoes):
-            raise ErroFerramenta("citacoes deve ser uma lista de rótulos")
-        return {"cobertura": cobertura, "resposta": resposta, "citacoes": citacoes}
-
-    @staticmethod
-    def _citados(rotulos: list[str], trechos: dict[str, Resultado],
-                 eventos: dict[str, Evento]) -> tuple[list[tuple[str, str, str]], int]:
-        citados, invalidas, vistos = [], 0, set()
-        for rot in rotulos:
-            rot = rot.strip().upper()
-            if rot in vistos:
-                continue
-            vistos.add(rot)
-            if rot in trechos:
-                citados.append((rot, rotulo(trechos[rot]), trechos[rot].texto))
-            elif rot in eventos:
-                citados.append((rot, rotulo_evento(eventos[rot]), eventos[rot].descricao))
-            else:
-                invalidas += 1
-        return citados, invalidas
+        return concluir(pergunta, final, passos, contagem, forcou, self.modelo, trechos, eventos)
 
 
 def _rotular(rotulados: dict, item, prefixo: str) -> str:
