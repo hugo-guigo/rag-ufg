@@ -2,12 +2,14 @@
 
 Separado de app.py para os testes da API trocarem tudo isto por versões falsas.
 """
+import logging
 import os
 from dataclasses import dataclass, field
 
 from rag.agente import Agente, FontesPool
 from rag.registro import Limites, Registro
 
+log = logging.getLogger("api")
 MAX_ESPERA_GROQ = 8.0  # segundos somados de espera pelo limite por minuto antes de devolver 503
 MOTORES = ("manual", "langgraph")
 
@@ -28,17 +30,27 @@ def _inteiro(nome: str, padrao: int) -> int:
     return int(os.environ.get(nome) or padrao)
 
 
-def criar_agente(motor: str, fontes, cliente):
+def criar_agente(motor: str, fontes, cliente, pool=None):
     """AGENTE_MOTOR=manual (padrão) ou langgraph. Só o langgraph aceita conversa (thread_id).
 
-    Até o bloco 4 a memória das conversas fica no processo: some quando o app vai a zero réplicas.
+    Com o pool do Postgres, a memória das conversas fica no banco (rag/memoria.py) e sobrevive ao app ir a
+    zero réplicas. Sem pool (testes), fica no processo.
     """
     if motor == "manual":
         return Agente(fontes, cliente)
     if motor == "langgraph":
         from rag.agente_grafo import AgenteGrafo, checkpointer_em_memoria
 
-        return AgenteGrafo(fontes, cliente, checkpointer=checkpointer_em_memoria())
+        if pool is None:
+            return AgenteGrafo(fontes, cliente, checkpointer=checkpointer_em_memoria())
+        from rag.memoria import checkpointer_postgres, limpar_conversas_antigas
+
+        saver = checkpointer_postgres(pool)
+        try:  # o app sobe de novo a cada vez que sai do zero: um bom momento para a limpeza
+            log.info("conversas antigas apagadas: %d", limpar_conversas_antigas(pool, saver))
+        except Exception:  # sem limpeza a demo continua funcionando; só cresce mais devagar
+            log.exception("falha ao apagar conversas antigas")
+        return AgenteGrafo(fontes, cliente, checkpointer=saver)
     raise ValueError(f"AGENTE_MOTOR inválido: {motor!r} (use um de {MOTORES})")
 
 
@@ -57,7 +69,8 @@ def servicos_do_ambiente() -> Servicos:
     embedder = Embedder("int8")
     embedder.pergunta("aquecimento")  # a primeira inferência do ONNX é mais lenta; paga no início
     fontes = FontesPool(pool, embedder)
-    agente = criar_agente(os.environ.get("AGENTE_MOTOR") or "manual", fontes, ClienteGroq(max_espera=MAX_ESPERA_GROQ))
+    agente = criar_agente(os.environ.get("AGENTE_MOTOR") or "manual", fontes, ClienteGroq(max_espera=MAX_ESPERA_GROQ),
+                          pool)
     limites = Limites(_inteiro("LIMITE_POR_MINUTO", 5), _inteiro("LIMITE_POR_DIA", 30),
                       _inteiro("LIMITE_TOTAL_POR_DIA", 50))
     from mcp_ufg.ferramentas import AcervoPool

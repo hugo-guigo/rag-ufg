@@ -220,3 +220,13 @@ def test_motor_vem_de_agente_motor():
     assert isinstance(grafo, AgenteGrafo) and grafo.conversa
     with pytest.raises(ValueError, match="AGENTE_MOTOR"):
         criar_agente("LangGraph ", None, None)
+
+
+def test_motor_langgraph_com_pool_usa_a_memoria_no_postgres_e_sobrevive_a_limpeza_falhar():
+    from psycopg_pool import ConnectionPool
+
+    from api.servicos import criar_agente
+
+    pool = ConnectionPool("postgresql://ninguem@127.0.0.1:1/nada", open=False)  # nunca conecta
+    agente = criar_agente("langgraph", None, None, pool)  # a limpeza falha (pool fechado) e é só registrada
+    assert type(agente.grafo_conversa.checkpointer).__name__ == "PostgresSaver" and agente.conversa
