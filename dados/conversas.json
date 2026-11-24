@@ -1,0 +1,73 @@
+{
+  "nota": "Conversas de 2 a 3 turnos para medir a memória do motor langgraph. Esboçadas pelo Claude e revisadas pelo Hugo. O primeiro turno vem do conjunto anotado (dados/avaliacao.json, id em 'origem'); os seguintes dependem do contexto e só fazem sentido com a conversa. Referências conferidas no RGCG e em dados/calendario_2026.csv.",
+  "conversas": [
+    {"id": "v01", "turnos": [
+      {"pergunta": "Quando começa o segundo semestre de 2026?", "tipo": "calendario", "origem": "c01",
+       "resposta": "10 de agosto de 2026."},
+      {"pergunta": "E quando ele termina?", "tipo": "calendario",
+       "resposta": "As aulas de 2026/2 terminam em 12 de dezembro de 2026."}
+    ]},
+    {"id": "v02", "turnos": [
+      {"pergunta": "Qual o período para trancar a matrícula em 2026/2?", "tipo": "calendario", "origem": "c03",
+       "resposta": "De 15 a 22 de julho (1º momento) e de 27 de julho a 24 de setembro de 2026 (2º momento)."},
+      {"pergunta": "E quantas vezes posso fazer isso durante o curso?", "tipo": "regulamento", "origem": "r03",
+       "resposta": "No máximo 4 semestres letivos, consecutivos ou alternados (Art. 73)."},
+      {"pergunta": "Posso fazer isso logo no meu primeiro semestre?", "tipo": "regulamento", "origem": "r04",
+       "resposta": "Não, salvo doença, mudança de horário ou município por emprego, ou serviço militar obrigatório (Art. 75)."}
+    ]},
+    {"id": "v03", "turnos": [
+      {"pergunta": "Perdi uma prova. Qual o prazo para pedir segunda chamada?", "tipo": "regulamento", "origem": "r07",
+       "resposta": "Até 7 dias após a data da avaliação (Arts. 83 e 84)."},
+      {"pergunta": "E para pedir revisão da nota dela, depois que eu fizer?", "tipo": "regulamento", "origem": "r08",
+       "resposta": "Até 7 dias a partir da entrega da prova (Art. 85)."}
+    ]},
+    {"id": "v04", "turnos": [
+      {"pergunta": "Até quando posso cancelar uma disciplina em 2026/2?", "tipo": "calendario", "origem": "c04",
+       "resposta": "De 27 de julho a 27 de agosto de 2026."},
+      {"pergunta": "E se eu perder esse prazo, ainda tem jeito?", "tipo": "misto", "origem": "r21",
+       "resposta": "Sim, em caso excepcional comprovado, até 30 dias antes do fim das aulas (Art. 66). Em 2026/2, a data limite é 13 de novembro de 2026."}
+    ]},
+    {"id": "v05", "turnos": [
+      {"pergunta": "Quando começam as aulas de 2027/1?", "tipo": "calendario", "origem": "c07",
+       "resposta": "1º de março de 2027."},
+      {"pergunta": "E até quando tenho que pedir matrícula para esse semestre?", "tipo": "calendario", "origem": "c08",
+       "resposta": "De 21 a 28 de janeiro de 2027, pelo Portal do Discente."}
+    ]},
+    {"id": "v06", "turnos": [
+      {"pergunta": "Quantas horas por dia posso fazer de estágio obrigatório?", "tipo": "regulamento", "origem": "r14",
+       "resposta": "Até 6 horas diárias e 30 semanais; até 8 por dia e 40 por semana quando o estágio não tem disciplinas no mesmo período (Art. 18)."},
+      {"pergunta": "E qual a frequência exigida nele?", "tipo": "regulamento", "origem": "r17",
+       "resposta": "100%, com reposição para faltas justificadas (Art. 87, § 1º)."}
+    ]},
+    {"id": "v07", "turnos": [
+      {"pergunta": "Que nota preciso tirar na banca de extraordinário domínio?", "tipo": "regulamento", "origem": "r23",
+       "resposta": "8,0 ou mais (Art. 104, § 3º)."},
+      {"pergunta": "Dá para pedir isso para o TCC?", "tipo": "regulamento", "origem": "r22",
+       "resposta": "Não. Estágio obrigatório, TCC e núcleo livre não podem ser dispensados por extraordinário domínio (Art. 101)."}
+    ]},
+    {"id": "v08", "turnos": [
+      {"pergunta": "Estou grávida. Tenho direito a algum regime especial de estudos?", "tipo": "regulamento", "origem": "r27",
+       "resposta": "Sim, tratamento excepcional, que pode ser pedido a partir do oitavo mês de gestação (Art. 117)."},
+      {"pergunta": "E até quando tenho que protocolar o pedido depois do atestado?", "tipo": "regulamento", "origem": "r28",
+       "resposta": "Até 20 dias após a data do relatório médico (Art. 117, § 2º)."}
+    ]},
+    {"id": "v09", "turnos": [
+      {"pergunta": "Qual a nota mínima para passar numa disciplina?", "tipo": "regulamento", "origem": "r01",
+       "resposta": "Nota final igual ou superior a 6,0 e frequência de pelo menos 75% da carga horária (Art. 82, § 3º)."},
+      {"pergunta": "E quantas faltas posso ter?", "tipo": "regulamento", "origem": "r02",
+       "resposta": "A frequência mínima é 75% da carga horária, então as faltas podem chegar a 25% (Art. 87)."},
+      {"pergunta": "Isso vale para o estágio obrigatório também?", "tipo": "regulamento", "origem": "r17",
+       "resposta": "Não. No estágio obrigatório a frequência exigida é 100%, com reposição para faltas justificadas (Art. 87, § 1º)."}
+    ]},
+    {"id": "v10", "turnos": [
+      {"pergunta": "Quando vai ser o CONPEEX em 2026?", "tipo": "calendario", "origem": "c05",
+       "resposta": "De 9 a 13 de novembro de 2026."},
+      {"pergunta": "Tem algum feriado nessa semana?", "tipo": "calendario",
+       "resposta": "Não. De 9 a 13 de novembro de 2026 não há feriado, e os dias do CONPEEX são letivos. Os feriados mais próximos são 2 de novembro (Finados) e 14 de novembro (Emancipação de Aparecida de Goiânia)."}
+    ]},
+    {"id": "v11", "turnos": [
+      {"pergunta": "Qual o valor da bolsa de iniciação científica na UFG?", "tipo": "sem_resposta", "origem": "s01"},
+      {"pergunta": "E a de monitoria, quanto paga?", "tipo": "sem_resposta"}
+    ]}
+  ]
+}
