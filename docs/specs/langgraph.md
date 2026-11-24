@@ -179,3 +179,23 @@ motores para o mesmo roteiro; API com e sem `thread_id`. Os 119 testes de hoje c
   - Testes: 12 novos (8 do grafo, 4 da API); 143 no total (135 passam, 8 de integração pulados sem o
     Postgres local). Conferido que falham se a entrada não apagar as mensagens antigas, se o histórico
     não tiver limite ou se o checkpointer usar o serializador padrão.
+- 24/11/2026, revisão do Hugo: bloco 2 aprovado. **Correção do registro do bloco 1:** ali está escrito que
+  "o CI roda os 8" testes de integração. Não roda: o job de testes não define `RODAR_INTEGRACAO`, e o job
+  da imagem só confere `/health` e o 401 do `/mcp`. Os 8 foram rodados localmente em 24/11/2026, com o
+  Postgres do docker compose: 8 passam.
+- 23 e 24/11/2026: bloco 3 em andamento. `--motor` nos scripts de avaliação (a rodada de 30/09 fica como
+  registro), `scripts/avaliar_conversas.py`, `scripts/comparar_motores.py` e 11 conversas em
+  `dados/conversas.json` (rascunho do Claude, aguardando a revisão do Hugo). Rodadas nas 60 perguntas, nos
+  mesmos dias, no plano grátis do Groq:
+  - 50 anotadas: correta 42/50 (manual) e 43/50 (langgraph); correta ou parcial 46/50 nos dois; fiel
+    36/42 e 37/42; ferramenta certa 42/42 nos dois; 2,18 chamadas ao LLM por pergunta nos dois.
+  - 10 em linguagem de aluno: correta 3/10 e 4/10; o conjunto continua fraco nos dois motores (a busca
+    é o gargalo, como em 30/09).
+  - As perguntas em que só um acertou (c04; r17, r24, t09) mostram a variação do modelo, não do motor:
+    na c04, os dois mandaram o mesmo primeiro pedido e o modelo escolheu intervalos de datas diferentes.
+- 24/11/2026: parte do bloco 4 adiantada a pedido do Hugo (não depende dos resultados): memória no
+  Postgres (`rag/memoria.py`, `scripts/preparar_memoria.py`), limpeza das conversas com mais de 7 dias ao
+  subir a API, `langgraph-checkpoint-postgres==3.2.1` no `requirements-api.txt` (faltava) e 3 testes de
+  integração (a conversa continua depois de reiniciar o app; a limpeza apaga só as antigas; o app não
+  cria tabelas), que passam a rodar no CI. O motor padrão continua `manual`; o Neon e o deploy esperam a
+  aprovação dos resultados. Testes: 150 no total, todos passando com `RODAR_INTEGRACAO=1` no Postgres local.
