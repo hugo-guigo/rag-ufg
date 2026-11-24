@@ -1,9 +1,13 @@
 """Avalia o agente (etapa 5) nas 50 perguntas do conjunto de avaliação e compara com o RAG da etapa 4.
 
-Uso: python scripts/avaliar_agente.py [--conjunto avaliacao|teste] [--limite N]
+Uso: python scripts/avaliar_agente.py [--motor manual|langgraph] [--conjunto avaliacao|teste] [--limite N]
 Gasta cota do Groq: ~2 a 6 mil tokens por pergunta no agente, mais ~1,5 mil no juiz.
-Retoma de onde parou: cada pergunta fica em resultados/agente/<conjunto>.jsonl.
-Relatório: resultados/agente[_teste].md e .csv
+Retoma de onde parou: cada pergunta fica em resultados/agente/<motor>/<conjunto>.jsonl.
+Relatório: resultados/agente_<motor>[_teste].md e .csv
+
+A rodada de 30/09/2026 (só o motor manual) ficou em resultados/agente/<conjunto>.jsonl e
+resultados/agente[_teste].md, como registro. A comparação entre motores (docs/specs/langgraph.md) roda os
+dois de novo, nos mesmos dias, porque o modelo do Groq pode ter mudado desde então.
 
 Ordem: calendário, mistas e sem resposta primeiro (o que a etapa 4 não cobria), regulamento por último.
 
@@ -25,6 +29,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ))
 
 from rag.agente import Agente, FontesBanco  # noqa: E402
+from rag.agente_grafo import AgenteGrafo  # noqa: E402
 from rag.banco import conectar  # noqa: E402
 from rag.embeddings import Embedder  # noqa: E402
 from rag.juiz import REFERENCIA_SEM_RESPOSTA_AGENTE, SISTEMA_AGENTE, julgar  # noqa: E402
@@ -32,6 +37,7 @@ from rag.llm import ClienteGroq, ErroLLM  # noqa: E402
 from rag.metricas import contem_trecho, percentil, trechos_de  # noqa: E402
 
 PASTA = RAIZ / "resultados" / "agente"
+MOTORES = {"manual": Agente, "langgraph": AgenteGrafo}  # o grafo sem checkpointer: pergunta avulsa
 ORDEM = {"calendario": 0, "misto": 1, "sem_resposta": 2, "regulamento": 3}
 HOJE = date(2026, 9, 29)  # fixo para a avaliação ser reproduzível
 PRECO = {"openai/gpt-oss-20b": (0.075, 0.30)}  # US$ por milhão de tokens (entrada, saída), groq.com/pricing
@@ -43,19 +49,19 @@ def evento_bate(esperado: dict, e) -> bool:
             and esperado["contem"] in e.descricao)
 
 
-def rodar(conjunto: str, limite: int | None) -> None:
+def rodar(motor: str, conjunto: str, limite: int | None) -> None:
     perguntas = json.loads((RAIZ / "dados" / f"{conjunto}.json").read_text(encoding="utf-8"))
     perguntas.sort(key=lambda p: ORDEM[p["tipo"]])
-    PASTA.mkdir(parents=True, exist_ok=True)
-    arquivo = PASTA / f"{conjunto}.jsonl"
+    (PASTA / motor).mkdir(parents=True, exist_ok=True)
+    arquivo = PASTA / motor / f"{conjunto}.jsonl"
     feitos = {json.loads(linha)["id"] for linha in arquivo.open(encoding="utf-8")} if arquivo.exists() else set()
     pendentes = [p for p in perguntas if p["id"] not in feitos][:limite]
-    print(f"{conjunto}: {len(feitos)} já feitas, {len(pendentes)} agora")
+    print(f"{motor}, {conjunto}: {len(feitos)} já feitas, {len(pendentes)} agora")
     if not pendentes:
         return
     embedder, cliente = Embedder("int8"), ClienteGroq()
     embedder.pergunta("aquecimento")
-    agente = Agente(FontesBanco(conectar(), embedder), cliente, hoje=HOJE)
+    agente = MOTORES[motor](FontesBanco(conectar(), embedder), cliente, hoje=HOJE)
     for p in pendentes:
         quebradas, dobrados, consertadas = cliente.chamadas_quebradas, cliente.limites_dobrados, cliente.chamadas_consertadas
         try:
@@ -90,7 +96,7 @@ def rodar(conjunto: str, limite: int | None) -> None:
             "limites_dobrados": cliente.limites_dobrados - dobrados,
             "chamadas_consertadas": cliente.chamadas_consertadas - consertadas,
             "ms_llm": r.ms_llm, "ms_llm_total": r.ms_llm_total, "ms_ferramentas": r.ms_ferramentas,
-            "tokens_entrada": r.tokens_entrada, "tokens_saida": r.tokens_saida, "modelo": r.modelo,
+            "tokens_entrada": r.tokens_entrada, "tokens_saida": r.tokens_saida, "modelo": r.modelo, "motor": motor,
             "juiz_tokens_entrada": j.tokens_entrada, "juiz_tokens_saida": j.tokens_saida,
         }
         with arquivo.open("a", encoding="utf-8") as saida:
@@ -108,17 +114,18 @@ def ferramenta_certa(r: dict) -> bool:
             "misto": r["usou_regulamento"] and r["usou_calendario"]}[r["tipo"]]
 
 
-def relatorio(conjunto: str) -> None:
-    arquivo = PASTA / f"{conjunto}.jsonl"
+def relatorio(motor: str, conjunto: str) -> None:
+    arquivo = PASTA / motor / f"{conjunto}.jsonl"
     if not arquivo.exists():
         return
     regs = [json.loads(linha) for linha in arquivo.open(encoding="utf-8")]
+    total = len(json.loads((RAIZ / "dados" / f"{conjunto}.json").read_text(encoding="utf-8")))
     por_tipo = {t: [r for r in regs if r["tipo"] == t] for t in TIPOS}
-    linhas = [f"# Avaliação do agente (etapa 5), conjunto {conjunto}", "",
+    linhas = [f"# Avaliação do agente (motor {motor}), conjunto {conjunto}", "",
               "Gerado por scripts/avaliar_agente.py. Modelo do agente: openai/gpt-oss-20b, até 4 chamadas por pergunta. "
               "Juiz: openai/gpt-oss-120b. Ferramentas: buscar_regulamento (vetorial, artigo com seção, k=5) e "
               "consultar_calendario (híbrida com filtro de datas, até 8 eventos).", "",
-              f"Perguntas avaliadas: {len(regs)} de 50.", "", "## Por tipo de pergunta", "",
+              f"Perguntas avaliadas: {len(regs)} de {total}.", "", "## Por tipo de pergunta", "",
               "| Métrica | Regulamento | Calendário | Mistas | Sem resposta |", "|---|---|---|---|---|"]
 
     def linha(nome, f):
@@ -192,7 +199,7 @@ def relatorio(conjunto: str) -> None:
                                     for x in r["passos"] if x["ferramenta"] != "responder")
             linhas.append(f"- {r['id']} ({r['tipo']}, {r['cobertura']}, correta={r['correta']}, fiel={r['fiel']}): "
                           f"{r['justificativa']}{extra} Ferramentas: {ferramentas}.")
-    sufixo = "_teste" if conjunto == "teste" else ""
+    sufixo = f"_{motor}" + ("_teste" if conjunto == "teste" else "")
     (RAIZ / "resultados" / f"agente{sufixo}.md").write_text("\n".join(linhas) + "\n", encoding="utf-8")
     campos = ["id", "tipo", "pergunta", "referencia", "resposta", "cobertura", "citados", "correta", "fiel",
               "sem_suporte", "justificativa", "usou_regulamento", "usou_calendario", "recuperou_trecho", "citou_trecho",
@@ -207,11 +214,12 @@ def relatorio(conjunto: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--motor", choices=list(MOTORES), default="manual")
     parser.add_argument("--conjunto", choices=["avaliacao", "teste"], default="avaliacao")
     parser.add_argument("--limite", type=int)
     args = parser.parse_args()
-    rodar(args.conjunto, args.limite)
-    relatorio(args.conjunto)
+    rodar(args.motor, args.conjunto, args.limite)
+    relatorio(args.motor, args.conjunto)
 
 
 if __name__ == "__main__":
