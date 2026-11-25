@@ -269,6 +269,56 @@ O Claude Code guarda esse header na configuração local dele, em texto: trate o
   executa ferramentas remotas descobertas em vez das locais de schema fixo; o que é igual vem do agente.
 - O SDK 2.x é recente e mudou bastante em relação à 1.x.
 
+## Segundo motor em LangGraph e conversa com memória
+
+O agente tem dois motores com as mesmas ferramentas, o mesmo prompt, o mesmo cliente do Groq e o mesmo
+modelo: o laço escrito à mão (`manual`, o padrão e o da demo) e um grafo em LangGraph (`langgraph`, em
+`rag/agente_grafo.py`). Só o segundo guarda a conversa. Escolha por `AGENTE_MOTOR`. Especificação e
+registro da revisão: [docs/specs/langgraph.md](docs/specs/langgraph.md).
+
+- **O grafo:** três nós (`modelo`, `ferramentas`, `memoria`), com o limite de passos no estado e
+  `recursion_limit` como rede de segurança. Os nós chamam a mesma função de ferramentas do motor manual,
+  então os rótulos T1/E1 e a validação das citações são os mesmos. Em 6 roteiros com um LLM falso, os dois
+  motores fazem os mesmos pedidos ao modelo e chegam ao mesmo resultado.
+- **Memória:** `thread_id` (UUID) opcional no `POST /perguntar`; a resposta devolve o id para o turno
+  seguinte. O modelo vê só pergunta e resposta final dos 3 turnos anteriores, sem as saídas das
+  ferramentas, para o custo não crescer a cada turno. Com o motor `manual`, um `thread_id` dá 400, em vez
+  de ser ignorado em silêncio.
+- **Onde a conversa fica:** no Postgres, com o `PostgresSaver` do `langgraph-checkpoint-postgres`, para
+  sobreviver ao app ir a zero réplicas. As tabelas são criadas pelo admin (`scripts/preparar_memoria.py`),
+  o usuário `app` só lê, grava e apaga checkpoints, e a API apaga ao subir as conversas paradas há mais de
+  7 dias. O serializador só aceita uma lista fechada de classes. Testado no Postgres local e no CI (a
+  conversa continua depois de reiniciar o app; a limpeza apaga só as antigas; o app não cria tabelas).
+
+### Os dois motores medidos (mesmos conjuntos, mesmos dias, 23 a 25/11/2026)
+
+| Métrica | manual | langgraph |
+|---|---|---|
+| 50 perguntas anotadas: correta | 42/50 | 43/50 |
+| 50 anotadas: correta ou parcial | 46/50 | 46/50 |
+| 10 perguntas de aluno: correta | 3/10 | 4/10 |
+| Chamadas ao LLM por pergunta | 2,18 | 2,18 |
+| Tokens de entrada por pergunta | 2.806 | 2.855 |
+| Conversas: acompanhamento correto | 7/13 | 8/13 |
+| Conversas: acompanhamento correto ou parcial | 7/13 | 9/13 |
+
+As 11 conversas (24 turnos, 13 que dependem do turno anterior) foram esboçadas pelo Claude e revisadas e
+aprovadas por mim. Relatórios: `resultados/motores.md` e `resultados/conversas.md`.
+
+**O que os números dizem:** nas perguntas soltas, os motores empatam; as diferenças são de 1 pergunta e
+cabem na variação do modelo entre execuções. Nas conversas, a memória decidiu 3 turnos que o manual errou
+(como "e se eu perder esse prazo?") e errou 1 que o manual acertou. Com 13 turnos, 8 contra 7 não permite
+dizer que a memória melhora a taxa de acerto. O manual acertou vários acompanhamentos sem memória, porque
+a pergunta sozinha já levava a busca ao assunto certo. A memória não aumentou o custo por turno. Por isso
+a demo continua com o motor `manual`, e o `langgraph` fica a uma variável de distância.
+
+### Limitações do motor LangGraph
+
+- O conjunto de conversas é pequeno e foi escrito por nós; o juiz LLM decidiu os 48 turnos sem revisão
+  manual destas decisões.
+- A memória usa as respostas do próprio modelo: um erro num turno entra no contexto do seguinte.
+- Na demo o motor é o `manual`, então a conversa com memória não está no ar.
+
 ## Como rodar
 
 Requisitos: Python 3.13, Docker e uma chave grátis do Groq.
@@ -282,12 +332,14 @@ docker compose up -d --wait             # Postgres 17 + pgvector em 127.0.0.1:54
 python scripts/ingerir.py               # PDFs -> trechos -> embeddings -> banco (~1 min)
 python scripts/perguntar.py "quantas vezes posso trancar e qual o prazo em 2027/1?" --agente
 docker compose --profile api up -d --build   # a API em http://127.0.0.1:8000
-pytest                                  # 111 testes sem banco (38 do MCP)
-RODAR_INTEGRACAO=1 pytest -m integracao # 8 testes com o Postgres (3 do MCP)
+python scripts/preparar_memoria.py      # tabelas da conversa com memória (motor langgraph)
+pytest                                  # 139 testes sem banco
+RODAR_INTEGRACAO=1 pytest -m integracao # 11 testes com o Postgres (3 do MCP, 3 da memória)
 ```
 
 Avaliações (gastam cota do Groq): `scripts/avaliar_busca.py`, `scripts/avaliar_respostas.py` e
-`scripts/avaliar_agente.py`, todas com `--conjunto avaliacao|teste`. Log da API:
+`scripts/avaliar_agente.py`, todas com `--conjunto avaliacao|teste` (a do agente também com
+`--motor manual|langgraph`); `scripts/avaliar_conversas.py --motor` e `scripts/comparar_motores.py`. Log da API:
 `python scripts/resumo_consultas.py`.
 
 Nuvem: `scripts/preparar_neon.py` (banco), `scripts/deploy_azure.py orcamento` e depois
@@ -367,6 +419,20 @@ in the same order as the direct search in 50/50 cases (recall@5 88%, unchanged);
 direct, 136 ms over stdio, 180 ms over local HTTP. Deployed at `/mcp` on the demo (token required). A
 real Claude Code run is recorded in
 `docs/exemplo_claude_code.md`; the spec and review log are in `docs/specs/mcp.md`.
+
+## Second engine in LangGraph, with conversation memory
+
+`AGENTE_MOTOR` picks between the hand-written loop (`manual`, the default and the demo's) and a LangGraph
+graph (`langgraph`) with the same tools, prompt, Groq client and model; in 6 scripted runs with a fake LLM
+both send the same requests and reach the same result. Only the graph keeps a conversation: an optional
+`thread_id` on `POST /perguntar`, the last 3 turns as question and final answer only, stored in Postgres
+with `PostgresSaver` (tables created by the admin, the app user limited to checkpoint reads and writes,
+conversations idle for 7 days deleted at startup, a closed serializer allowlist), tested locally and in CI.
+Measured on the same sets and days: 42/50 vs 43/50 correct on the 50 labeled questions, 3/10 vs 4/10 on
+the student-phrased ones, 2.18 LLM calls per question for both; on 11 conversations (drafted by Claude,
+reviewed by me), 7/13 vs 8/13 follow-up turns correct (9/13 counting partial). Memory decided 3 turns and
+missed 1 the manual engine got right; with 13 turns that does not show a better hit rate, so the demo keeps
+the manual engine. Spec and review log: `docs/specs/langgraph.md`.
 
 ## Limitations
 
