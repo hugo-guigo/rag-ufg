@@ -199,3 +199,26 @@ motores para o mesmo roteiro; API com e sem `thread_id`. Os 119 testes de hoje c
   integração (a conversa continua depois de reiniciar o app; a limpeza apaga só as antigas; o app não
   cria tabelas), que passam a rodar no CI. O motor padrão continua `manual`; o Neon e o deploy esperam a
   aprovação dos resultados. Testes: 150 no total, todos passando com `RODAR_INTEGRACAO=1` no Postgres local.
+- 25/11/2026, revisão do Hugo nas conversas: as 11 de `dados/conversas.json` (esboçadas pelo Claude)
+  foram revisadas e aprovadas pelo Hugo sem mudanças.
+- 25/11/2026: dia 3 feito (`scripts/avaliar_conversas.py`, os dois motores no mesmo dia, Postgres local
+  desligado depois). 11 conversas, 24 turnos, 13 de acompanhamento. Relatório em `resultados/conversas.md`.
+
+  | Métrica | manual | langgraph |
+  |---|---|---|
+  | Primeiro turno: correta | 10/11 | 10/11 |
+  | Acompanhamento: correta | 7/13 | 8/13 |
+  | Acompanhamento: correta ou parcial | 7/13 | 9/13 |
+  | Acompanhamento: "não sei" | 3/13 | 2/13 |
+  | Tokens de entrada por turno (acompanhamento) | 3.149 | 3.045 |
+
+  - A memória acertou 3 turnos que dependem do turno anterior e que o manual errou (v04 e v05 corretas,
+    v06 parcial com os 100% do estágio). Errou 1 que o manual acertou (v10: disse que havia feriado na
+    semana; o manual acertou sem citar fonte). Os dois erraram v01, v07 e v09 t3.
+  - O manual acertou 7 acompanhamentos sem memória: perguntas como "quantas vezes posso fazer isso?"
+    levaram a busca ao mesmo assunto por acaso do texto. Por isso a diferença é menor que a esperada.
+  - **Conclusão honesta:** com 13 turnos, 8 contra 7 (ou 9 contra 7 com parciais) é diferença de 1 ou 2
+    turnos, dentro da variação do modelo vista nos dias 1 e 2. Não dá para afirmar que a memória melhora a
+    taxa de acerto; dá para mostrar os 3 casos em que o contexto foi o que fez a diferença, e que a memória
+    não aumentou o custo (o histórico tem só pergunta e resposta final). Juiz LLM (gpt-oss-120b), sem revisão manual
+    das 48 decisões (24 turnos x 2 motores).
