@@ -54,6 +54,15 @@ jobs:
         env:
           DATABASE_URL_ADMIN: postgresql://admin:admin-ci@127.0.0.1:5432/rag
           APP_DB_PASSWORD: app-ci
+      - name: Memória das conversas no Postgres (testes de integração, sem ingestão)
+        run: |
+          pip install -r requirements-dev.txt
+          python scripts/preparar_memoria.py
+          pytest -q tests/test_memoria_banco.py
+        env:
+          RODAR_INTEGRACAO: "1"
+          DATABASE_URL_ADMIN: postgresql://admin:admin-ci@127.0.0.1:5432/rag
+          DATABASE_URL: postgresql://app:app-ci@127.0.0.1:5432/rag
       - run: docker build -t "$IMAGEM:${{ github.sha }}" .
       - name: A imagem sobe e responde /health
         run: |

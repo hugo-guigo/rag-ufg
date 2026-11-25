@@ -36,7 +36,7 @@ from mcp import Client
 from mcp.shared.exceptions import MCPError
 from mcp.types import INTERNAL_ERROR
 
-from rag.agente import FERRAMENTAS, FORCAR_RESPOSTA, MAX_PASSOS, SISTEMA, Agente, ErroFerramenta
+from rag.agente import FERRAMENTAS, FORCAR_RESPOSTA, MAX_PASSOS, SISTEMA, ErroFerramenta, validar_final
 from rag.resposta import MODELO_RESPOSTA
 
 log = logging.getLogger("mcp_ufg.cliente")
@@ -279,7 +279,7 @@ class ClienteAssistente:
             return "ERRO: argumentos não são um objeto JSON válido"
         if nome == "responder":
             try:
-                return Agente._validar_final(argumentos)
+                return validar_final(argumentos)
             except ErroFerramenta as erro:
                 return f"ERRO: {erro}"
         inicio = time.perf_counter()
