@@ -287,8 +287,9 @@ registro da revisão: [docs/specs/langgraph.md](docs/specs/langgraph.md).
 - **Onde a conversa fica:** no Postgres, com o `PostgresSaver` do `langgraph-checkpoint-postgres`, para
   sobreviver ao app ir a zero réplicas. As tabelas são criadas pelo admin (`scripts/preparar_memoria.py`),
   o usuário `app` só lê, grava e apaga checkpoints, e a API apaga ao subir as conversas paradas há mais de
-  7 dias. O serializador só aceita uma lista fechada de classes. Testado no Postgres local e no CI (a
-  conversa continua depois de reiniciar o app; a limpeza apaga só as antigas; o app não cria tabelas).
+  7 dias. O serializador só aceita uma lista fechada de classes. Os 3 testes (a conversa continua
+  depois de reiniciar o app; a limpeza apaga só as antigas; o app não cria tabelas) rodam no Postgres local,
+  no CI e passaram no Neon, pelo pooler, com o usuário `app`. As tabelas já existem no Neon da demo.
 
 ### Os dois motores medidos (mesmos conjuntos, mesmos dias, 23 a 25/11/2026)
 
@@ -427,7 +428,8 @@ graph (`langgraph`) with the same tools, prompt, Groq client and model; in 6 scr
 both send the same requests and reach the same result. Only the graph keeps a conversation: an optional
 `thread_id` on `POST /perguntar`, the last 3 turns as question and final answer only, stored in Postgres
 with `PostgresSaver` (tables created by the admin, the app user limited to checkpoint reads and writes,
-conversations idle for 7 days deleted at startup, a closed serializer allowlist), tested locally and in CI.
+conversations idle for 7 days deleted at startup, a closed serializer allowlist), tested locally, in CI and
+against Neon through its pooler.
 Measured on the same sets and days: 42/50 vs 43/50 correct on the 50 labeled questions, 3/10 vs 4/10 on
 the student-phrased ones, 2.18 LLM calls per question for both; on 11 conversations (drafted by Claude,
 reviewed by me), 7/13 vs 8/13 follow-up turns correct (9/13 counting partial). Memory decided 3 turns and

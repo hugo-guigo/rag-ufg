@@ -222,3 +222,10 @@ motores para o mesmo roteiro; API com e sem `thread_id`. Os 119 testes de hoje c
     taxa de acerto; dá para mostrar os 3 casos em que o contexto foi o que fez a diferença, e que a memória
     não aumentou o custo (o histórico tem só pergunta e resposta final). Juiz LLM (gpt-oss-120b), sem revisão manual
     das 48 decisões (24 turnos x 2 motores).
+- 25/11/2026, revisão do Hugo nos resultados: aprovados; o motor padrão da demo continua `manual`.
+- 25/11/2026, bloco 4: README (seção do motor LangGraph, tabela dos 3 dias, limitações) e guia de estudo
+  em `docs/DECISOES.md` (fora do git). Neon: `scripts/preparar_memoria.py` rodado duas vezes (idempotente)
+  com a conexão direta do dono do banco; os 3 testes da memória passaram contra o Neon pelo pooler, com o
+  usuário `app` (`prepare_threshold=None` conferido na prática). A demo continua sem usar essas tabelas,
+  porque o motor é o `manual`. Os 13 commits da branch, nunca enviados, tiveram o autor trocado para o
+  e-mail noreply do GitHub antes do primeiro push (conteúdo e datas iguais).
